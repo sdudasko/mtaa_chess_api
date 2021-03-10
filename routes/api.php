@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+//Route::get("/tournaments", 'App\Http\Controllers\TournamentController@index');
+
+Route::group([
+//    'prefix'     => 'v1',
+//    'as'         => 'api.',
+    'namespace'  => 'App\Http\Controllers',
+    'middleware' => [],
+], function () {
+    Route::apiResource('tournaments', 'TournamentController');
 });
