@@ -13,9 +13,9 @@ class Controller extends BaseController
      * @OA\Info(
      *      version="1.0.0",
      *      title="Laravel OpenApi Demo Documentation",
-     *      description="L5 Swagger OpenApi description",
+     *      description="API for chess tournament administration system.",
      *      @OA\Contact(
-     *          email="admin@admin.com"
+     *          email="xdudasko@stuba.sk, xdemeterp@stuba.sk"
      *      ),
      *      @OA\License(
      *          name="Apache 2.0",

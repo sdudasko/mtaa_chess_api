@@ -23,45 +23,22 @@ class NewPasswordController extends Controller
      * @OA\Post(
      *      path="/reset-password",
      *      operationId="resetPassword",
-     *      tags={"Password reset"},
+     *      tags={"Auth"},
      *      summary="Handle an incoming new password request.",
      *      description="Returns 200 if new password was set successfully. ",
-     *      @OA\Parameter(
-     *          name="token",
+     *      @OA\RequestBody(
      *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="token"
-     *          )
-     *      ),
-     *      @OA\Parameter(
-     *          name="email",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="email"
-     *          )
-     *      ),
-     *      @OA\Parameter(
-     *          name="password",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="password"
-     *          )
+     *          @OA\JsonContent(
+     *              required={"title","date", "tempo"},
+     *              @OA\Property(property="token", type="string", example="token..."),
+     *              @OA\Property(property="email", type="email", example="xuser@stuba.sk"),
+     *              @OA\Property(property="password", type="string", example="password"),
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
+     *       )
      * )
      */
     public function store(Request $request)

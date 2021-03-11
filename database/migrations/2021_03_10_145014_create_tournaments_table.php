@@ -21,9 +21,10 @@ class CreateTournamentsTable extends Migration
             $table->integer('tempo_minutes');
             $table->integer('tempo_increment')->nullable();
             $table->text('description')->nullable();
-            $table->date('date')->nullable();
+            $table->dateTime('datetime')->nullable();
             $table->integer('rounds');
             $table->binary('image');
+            $table->string("qr_hash")->nullable();
             $table->timestamps();
         });
     }

@@ -20,14 +20,14 @@ class PasswordResetLinkController extends Controller
      * @OA\Post(
      *      path="/forgot-password",
      *      operationId="forgotPassword",
-     *      tags={"Forgot password"},
+     *      tags={"Auth"},
      *      summary="Handle an incoming password reset link request.",
      *      description="Sending password reset link to the user",
      *      @OA\Parameter(
      *          name="email",
      *          description="User email",
      *          required=true,
-     *          in="path",
+     *          in="query",
      *          @OA\Schema(
      *              type="email"
      *          )
@@ -36,14 +36,6 @@ class PasswordResetLinkController extends Controller
      *          response=200,
      *          description="Successful operation",
      *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
      * )
      */
     public function store(Request $request)

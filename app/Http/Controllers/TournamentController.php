@@ -9,35 +9,7 @@ use App\Models\Tournament;
 class TournamentController extends Controller
 {
     /**
-     * @OA\Get(
-     *      path="/tournaments",
-     *      operationId="getTournamentsList",
-     *      tags={"Tournaments"},
-     *      summary="Get list of tournaments",
-     *      description="Returns list of tournaments",
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/TournamentResource")
-     *       ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     *     )
-     */
-    public function index()
-    {
-        return new TournamentResource(Tournament::all());
-
-    }
-
-    /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/tournaments",
      *      operationId="storeTournament",
      *      tags={"Tournaments"},
@@ -45,7 +17,16 @@ class TournamentController extends Controller
      *      description="Returns tournament data",
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/StoreTournamentRequest")
+     *          @OA\JsonContent(
+     *              required={"title","date", "tempo"},
+     *              @OA\Property(property="title", type="string", format="string", example="Tournament name"),
+     *              @OA\Property(property="date", type="datetime", format="YYYY-MM-DD HH:MM:SS", example="2021-05-06 09:00:00"),
+     *              @OA\Property(property="tempo", type="integer", example="3"),
+     *              @OA\Property(property="tempo_increment", type="integer", example="2"),
+     *              @OA\Property(property="rounds", type="integer", example="15"),
+     *              @OA\Property(property="description", type="text", example="Description"),
+     *              @OA\Property(property="image", type="bytearray", example=""),
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -63,9 +44,18 @@ class TournamentController extends Controller
      *      @OA\Response(
      *          response=403,
      *          description="Forbidden"
-     *      )
+     *      ),
+     *       @OA\Response(
+     *          response=422,
+     *          description="Invalid request body.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Sorry, invalid request body.")
+     *        )
+     *     )
+     *  )
      * )
      */
+
     public function store()
     {
         //
@@ -88,17 +78,13 @@ class TournamentController extends Controller
      *          )
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=201,
      *          description="Successful operation",
      *          @OA\JsonContent(ref="#/components/schemas/Tournament")
      *       ),
      *      @OA\Response(
      *          response=400,
      *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
      *      ),
      *      @OA\Response(
      *          response=403,
@@ -116,7 +102,7 @@ class TournamentController extends Controller
      *      path="/tournaments/{id}",
      *      operationId="updateTournament",
      *      tags={"Tournaments"},
-     *      summary="Update existing tournament",
+     *      summary="Overrides existing tournament values.",
      *      description="Returns updated tournament data",
      *      @OA\Parameter(
      *          name="id",
@@ -129,7 +115,7 @@ class TournamentController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/UpdateTournamentRequest")
+     *          @OA\JsonContent(ref="#/components/schemas/Tournament")
      *      ),
      *      @OA\Response(
      *          response=202,
@@ -145,13 +131,16 @@ class TournamentController extends Controller
      *          description="Unauthenticated",
      *      ),
      *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
-     *      )
+     *      ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Invalid request body.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Sorry, invalid request body.")
+     *        )
+     *     )
      * )
      */
     public function update(UpdateTournamentRequest $request, Tournament $tournament)
@@ -165,7 +154,7 @@ class TournamentController extends Controller
      *      operationId="deleteTournament",
      *      tags={"Tournaments"},
      *      summary="Delete existing tournament",
-     *      description="Deletes a record and returns no content",
+     *      description="Deletes a record and returns no content.",
      *      @OA\Parameter(
      *          name="id",
      *          description="Tournament id",
@@ -178,7 +167,6 @@ class TournamentController extends Controller
      *      @OA\Response(
      *          response=204,
      *          description="Successful operation",
-     *          @OA\JsonContent()
      *       ),
      *      @OA\Response(
      *          response=401,
@@ -198,4 +186,39 @@ class TournamentController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Get(
+     *      path="/tournaments/{hash}",
+     *      operationId="checkTournamentByHash",
+     *      tags={"Tournaments"},
+     *      summary="Check if the scanned hash is a valid tournament hash.",
+     *      description="Returns true if the tournament is active and player can attend it.",
+     *      @OA\Parameter(
+     *          name="hash",
+     *          description="Tournament hash",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Returns true if the provided tournament hash is valid.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="valid", type="bool", example="true")
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Resource Not Found"
+     *      )
+     *    )
+     * )
+     */
+    public function checkTournamentByHash(string $hash)
+    {
+        //
+    }
+
 }

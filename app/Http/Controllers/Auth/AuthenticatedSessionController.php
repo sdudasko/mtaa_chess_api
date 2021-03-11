@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
      * @OA\Post(
      *      path="/login",
      *      operationId="login",
-     *      tags={"Login"},
+     *      tags={"Auth"},
      *      summary="Handle an incoming authentication request.",
      *      description="Logging in the user.",
      *      @OA\Parameter(
@@ -42,15 +42,10 @@ class AuthenticatedSessionController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="token", type="string", format="string", example="..."),
+     *          )
      *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=401,
-     *          description="Unauthenticated",
-     *      ),
      *      @OA\Response(
      *          response=403,
      *          description="Forbidden"
@@ -77,14 +72,14 @@ class AuthenticatedSessionController extends Controller
      * @OA\Post(
      *      path="/logout",
      *      operationId="logout",
-     *      tags={"Logout"},
+     *      tags={"Auth"},
      *      summary="Destroy an authenticated session.",
      *      description="Logging out the user.",
      *      @OA\Parameter(
      *          name="id",
      *          description="User id",
-     *          required=false,
-     *          in="path",
+     *          required=true,
+     *          in="query",
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -94,17 +89,9 @@ class AuthenticatedSessionController extends Controller
      *          description="Successful operation",
      *       ),
      *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
      *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
      * )
      */
     public function destroy(Request $request)

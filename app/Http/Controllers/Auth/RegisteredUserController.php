@@ -18,18 +18,17 @@ class RegisteredUserController extends Controller
      * @OA\Post(
      *      path="/register",
      *      operationId="registerUser",
-     *      tags={"Registrations"},
+     *      tags={"Auth"},
      *      summary="Register a new user",
      *      description="Returns new user data",
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/StoreTournamentRequest")
+     *          @OA\JsonContent(
+     *              required={"email","password", "tempo"},
+     *              @OA\Property(property="email", type="email", example="xuser@stuba.sk"),
+     *              @OA\Property(property="password", type="password", example="password"),
+     *          ),
      *      ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/StoreUserRequest")
-     *       ),
      *      @OA\Response(
      *          response=400,
      *          description="Bad Request"
@@ -37,7 +36,21 @@ class RegisteredUserController extends Controller
      *      @OA\Response(
      *          response=403,
      *          description="Forbidden"
-     *      )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Invalid request body.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="user_id", type="integer", example="1")
+     *        )
+     *     ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Invalid request body.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Sorry, invalid request body.")
+     *        )
+     *     )
      * )
      */
     public function store(StoreUserRequest $request)

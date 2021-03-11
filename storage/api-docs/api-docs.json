@@ -2,9 +2,9 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Laravel OpenApi Demo Documentation",
-        "description": "L5 Swagger OpenApi description",
+        "description": "API for chess tournament administration system.",
         "contact": {
-            "email": "admin@admin.com"
+            "email": "xdudasko@stuba.sk, xdemeterp@stuba.sk"
         },
         "license": {
             "name": "Apache 2.0",
@@ -22,7 +22,7 @@
         "/login": {
             "post": {
                 "tags": [
-                    "Login"
+                    "Auth"
                 ],
                 "summary": "Handle an incoming authentication request.",
                 "description": "Logging in the user.",
@@ -47,13 +47,21 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "format": "string",
+                                            "example": "..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
                         "description": "Forbidden"
@@ -64,7 +72,7 @@
         "/logout": {
             "post": {
                 "tags": [
-                    "Logout"
+                    "Auth"
                 ],
                 "summary": "Destroy an authenticated session.",
                 "description": "Logging out the user.",
@@ -72,9 +80,9 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "description": "User id",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "integer"
                         }
@@ -84,14 +92,8 @@
                     "200": {
                         "description": "Successful operation"
                     },
-                    "400": {
-                        "description": "Bad Request"
-                    },
                     "401": {
                         "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
             }
@@ -99,46 +101,43 @@
         "/reset-password": {
             "post": {
                 "tags": [
-                    "Password reset"
+                    "Auth"
                 ],
                 "summary": "Handle an incoming new password request.",
                 "description": "Returns 200 if new password was set successfully. ",
                 "operationId": "resetPassword",
-                "parameters": [
-                    {
-                        "name": "token",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "token"
-                        }
-                    },
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "email"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "password"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "date",
+                                    "tempo"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "token..."
+                                    },
+                                    "email": {
+                                        "type": "email",
+                                        "example": "xuser@stuba.sk"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
             }
@@ -146,7 +145,7 @@
         "/forgot-password": {
             "post": {
                 "tags": [
-                    "Forgot password"
+                    "Auth"
                 ],
                 "summary": "Handle an incoming password reset link request.",
                 "description": "Sending password reset link to the user",
@@ -154,7 +153,7 @@
                 "parameters": [
                     {
                         "name": "email",
-                        "in": "path",
+                        "in": "query",
                         "description": "User email",
                         "required": true,
                         "schema": {
@@ -165,12 +164,6 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
             }
@@ -178,7 +171,7 @@
         "/register": {
             "post": {
                 "tags": [
-                    "Registrations"
+                    "Auth"
                 ],
                 "summary": "Register a new user",
                 "description": "Returns new user data",
@@ -188,57 +181,178 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreTournamentRequest"
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "tempo"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email",
+                                        "example": "xuser@stuba.sk"
+                                    },
+                                    "password": {
+                                        "type": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
                 },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "201": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, invalid request body."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matches": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Get list of matches",
+                "description": "Returns list of matches",
+                "operationId": "getMatchesList",
+                "parameters": [
+                    {
+                        "name": "round",
+                        "in": "query",
+                        "description": "Round number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/StoreUserRequest"
-                                }
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "table": 1,
+                                        "white": 3,
+                                        "black": 8,
+                                        "result": null,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 2,
+                                        "white": 4,
+                                        "black": 9,
+                                        "result": 1,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 3,
+                                        "white": 5,
+                                        "black": 10,
+                                        "result": 2,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 4,
+                                        "white": 6,
+                                        "black": 11,
+                                        "result": 0,
+                                        "round": 5
+                                    }
+                                ]
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
-            }
-        },
-        "/matches": {
-            "post": {
+            },
+            "put": {
                 "tags": [
                     "Matches"
                 ],
                 "summary": "Create new round",
                 "description": "Returns new round data",
                 "operationId": "storeMatch",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StoreMatchRequest"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Match"
-                                }
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "table": 1,
+                                        "white": 3,
+                                        "black": 8,
+                                        "result": null,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 2,
+                                        "white": 4,
+                                        "black": 9,
+                                        "result": 1,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 3,
+                                        "white": 5,
+                                        "black": 10,
+                                        "result": 2,
+                                        "round": 5
+                                    },
+                                    {
+                                        "table": 4,
+                                        "white": 6,
+                                        "black": 11,
+                                        "result": 0,
+                                        "round": 5
+                                    }
+                                ]
                             }
                         }
                     },
@@ -259,30 +373,90 @@
                 "tags": [
                     "Matches"
                 ],
-                "summary": "Get match information",
-                "description": "Returns match data",
-                "operationId": "getMatchById",
+                "summary": "Get list of player's matches. (User with id 2 in the example.)",
+                "description": "Returns list of player's matches",
+                "operationId": "getPlayerMatches",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Match id",
-                        "required": false,
+                        "description": "Player id",
+                        "required": true,
                         "schema": {
                             "type": "integer"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Match"
-                                }
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "table": 1,
+                                        "white": 2,
+                                        "black": 8,
+                                        "result": 3,
+                                        "round": 1
+                                    },
+                                    {
+                                        "table": 2,
+                                        "white": 9,
+                                        "black": 2,
+                                        "result": 1,
+                                        "round": 2
+                                    },
+                                    {
+                                        "table": 3,
+                                        "white": 2,
+                                        "black": 10,
+                                        "result": 2,
+                                        "round": 3
+                                    },
+                                    {
+                                        "table": 4,
+                                        "white": 11,
+                                        "black": 2,
+                                        "result": 0,
+                                        "round": 4
+                                    }
+                                ]
                             }
                         }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Update existing match",
+                "description": "Returns updated match data",
+                "operationId": "updateMatch",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Match id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "result",
+                        "in": "query",
+                        "description": "Match result",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
                     },
                     "400": {
                         "description": "Bad Request"
@@ -290,40 +464,27 @@
                     "401": {
                         "description": "Unauthenticated"
                     },
-                    "403": {
-                        "description": "Forbidden"
+                    "422": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, invalid request body."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
         "/tournaments": {
-            "get": {
-                "tags": [
-                    "Tournaments"
-                ],
-                "summary": "Get list of tournaments",
-                "description": "Returns list of tournaments",
-                "operationId": "getTournamentsList",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TournamentResource"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                }
-            },
-            "post": {
+            "put": {
                 "tags": [
                     "Tournaments"
                 ],
@@ -335,7 +496,44 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreTournamentRequest"
+                                "required": [
+                                    "title",
+                                    "date",
+                                    "tempo"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "Tournament name"
+                                    },
+                                    "date": {
+                                        "type": "datetime",
+                                        "format": "YYYY-MM-DD HH:MM:SS",
+                                        "example": "2021-05-06 09:00:00"
+                                    },
+                                    "tempo": {
+                                        "type": "integer",
+                                        "example": "3"
+                                    },
+                                    "tempo_increment": {
+                                        "type": "integer",
+                                        "example": "2"
+                                    },
+                                    "rounds": {
+                                        "type": "integer",
+                                        "example": "15"
+                                    },
+                                    "description": {
+                                        "type": "text",
+                                        "example": "Description"
+                                    },
+                                    "image": {
+                                        "type": "bytearray",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -359,6 +557,22 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, invalid request body."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -383,7 +597,7 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -396,9 +610,6 @@
                     "400": {
                         "description": "Bad Request"
                     },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
                     "403": {
                         "description": "Forbidden"
                     }
@@ -408,7 +619,7 @@
                 "tags": [
                     "Tournaments"
                 ],
-                "summary": "Update existing tournament",
+                "summary": "Overrides existing tournament values.",
                 "description": "Returns updated tournament data",
                 "operationId": "updateTournament",
                 "parameters": [
@@ -427,7 +638,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateTournamentRequest"
+                                "$ref": "#/components/schemas/Tournament"
                             }
                         }
                     }
@@ -449,11 +660,24 @@
                     "401": {
                         "description": "Unauthenticated"
                     },
-                    "403": {
-                        "description": "Forbidden"
-                    },
                     "404": {
                         "description": "Resource Not Found"
+                    },
+                    "422": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, invalid request body."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -462,7 +686,7 @@
                     "Tournaments"
                 ],
                 "summary": "Delete existing tournament",
-                "description": "Deletes a record and returns no content",
+                "description": "Deletes a record and returns no content.",
                 "operationId": "deleteTournament",
                 "parameters": [
                     {
@@ -477,12 +701,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
+                        "description": "Successful operation"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -496,6 +715,45 @@
                 }
             }
         },
+        "/tournaments/{hash}": {
+            "get": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Check if the scanned hash is a valid tournament hash.",
+                "description": "Returns true if the tournament is active and player can attend it.",
+                "operationId": "checkTournamentByHash",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "Tournament hash",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Returns true if the provided tournament hash is valid.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "valid": {
+                                            "type": "bool",
+                                            "example": "true"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/players": {
             "get": {
                 "tags": [
@@ -505,21 +763,45 @@
                 "description": "Returns list of players",
                 "operationId": "getPlayersList",
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserResource"
-                                }
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "name": "Jozef Nový",
+                                        "elo": 2650,
+                                        "title": "GM",
+                                        "category": "CH24"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "František Starý",
+                                        "elo": 2600,
+                                        "title": "GM",
+                                        "category": "CH24"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Samuel Halčin",
+                                        "elo": 2477,
+                                        "title": "IM",
+                                        "category": "CH18"
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Anna Lizáková",
+                                        "elo": 2311,
+                                        "title": "FM",
+                                        "category": "D18"
+                                    }
+                                ]
                             }
                         }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
             },
@@ -535,7 +817,25 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StorePlayerRequest"
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "František Nový"
+                                    },
+                                    "elo": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "CH20"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "null"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -546,7 +846,37 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Player"
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "František Nový"
+                                        },
+                                        "elo": {
+                                            "type": "integer",
+                                            "example": "1000"
+                                        },
+                                        "category": {
+                                            "type": "string",
+                                            "example": "CH20"
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "null"
+                                        },
+                                        "created_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        },
+                                        "updated_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -556,9 +886,60 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    }
+                }
+            }
+        },
+        "/players/storeBulk": {
+            "put": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Store list of players",
+                "description": "Returns whether operation was successful.",
+                "operationId": "storeBulkPlayers",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            },
+                            "example": [
+                                {
+                                    "name": "Jozef Nový",
+                                    "elo": 2650,
+                                    "title": "GM",
+                                    "category": "CH24"
+                                },
+                                {
+                                    "name": "František Starý",
+                                    "elo": 2600,
+                                    "title": "GM",
+                                    "category": "CH24"
+                                },
+                                {
+                                    "name": "Samuel Halčin",
+                                    "elo": 2477,
+                                    "title": "IM",
+                                    "category": "CH18"
+                                },
+                                {
+                                    "name": "Anna Lizáková",
+                                    "elo": 2311,
+                                    "title": "FM",
+                                    "category": "D18"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
                     },
-                    "403": {
-                        "description": "Forbidden"
+                    "500": {
+                        "description": "Something went wrong."
                     }
                 }
             }
@@ -569,16 +950,68 @@
                     "Standings"
                 ],
                 "summary": "Get standings",
-                "description": "Returns standings",
+                "description": "Returns standings after last round if not specified otherwise.",
                 "operationId": "getStandings",
+                "parameters": [
+                    {
+                        "name": "group_by_category",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "bool"
+                        }
+                    },
+                    {
+                        "name": "round",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserResource"
-                                }
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "name": "Jozef Nový",
+                                        "elo": 2650,
+                                        "title": "GM",
+                                        "category": "CH24",
+                                        "points": 3
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "František Starý",
+                                        "elo": 2600,
+                                        "title": "GM",
+                                        "category": "CH24",
+                                        "points": 2
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Samuel Halčin",
+                                        "elo": 2477,
+                                        "title": "IM",
+                                        "category": "CH18",
+                                        "points": 5.5
+                                    },
+                                    {
+                                        "id": 3,
+                                        "name": "Anna Lizáková",
+                                        "elo": 2311,
+                                        "title": "FM",
+                                        "category": "D18",
+                                        "points": 3.5
+                                    }
+                                ]
                             }
                         }
                     },
@@ -608,12 +1041,46 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Player"
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "František Nový"
+                                        },
+                                        "elo": {
+                                            "type": "integer",
+                                            "example": "1000"
+                                        },
+                                        "category": {
+                                            "type": "string",
+                                            "example": "CH20"
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "null"
+                                        },
+                                        "points": {
+                                            "type": "integer",
+                                            "example": 9
+                                        },
+                                        "created_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        },
+                                        "updated_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -623,9 +1090,6 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
             },
@@ -633,37 +1097,86 @@
                 "tags": [
                     "Players"
                 ],
-                "summary": "Update existing player",
+                "summary": "Overrides existing tournament values.",
                 "description": "Returns updated player data",
                 "operationId": "updatePlayer",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Player id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdatePlayerRequest"
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "František Nový"
+                                    },
+                                    "elo": {
+                                        "type": "integer",
+                                        "example": "1000"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "CH20"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "null"
+                                    },
+                                    "created_at": {
+                                        "type": "timestamp",
+                                        "example": "2021-05-06 09:00:00"
+                                    },
+                                    "updated_at": {
+                                        "type": "timestamp",
+                                        "example": "2021-05-06 09:00:00"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "202": {
+                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Player"
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "František Nový"
+                                        },
+                                        "elo": {
+                                            "type": "integer",
+                                            "example": "1000"
+                                        },
+                                        "category": {
+                                            "type": "string",
+                                            "example": "CH20"
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "null"
+                                        },
+                                        "created_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        },
+                                        "updated_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -673,51 +1186,54 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Resource Not Found"
                     }
                 }
             }
         },
-        "/Player/edit/{id}": {
-            "get": {
+        "/users/checkPlayerId": {
+            "post": {
                 "tags": [
                     "Players"
                 ],
-                "summary": "Get player information",
-                "description": "Returns player data",
-                "operationId": "editPlayerById",
+                "summary": "Check if the typed id is a valid player id.",
+                "description": "Returns true if the player can attend the tournament.",
+                "operationId": "checkPlayerId",
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "description": "Player id",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "query",
+                        "description": "Tournament hash",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation",
+                    "201": {
+                        "description": "Returns true if the player can attend the tournament.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Player"
+                                    "properties": {
+                                        "valid": {
+                                            "type": "bool",
+                                            "example": "true"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
                     },
                     "403": {
                         "description": "Forbidden"
@@ -760,6 +1276,14 @@
                 ],
                 "type": "object"
             },
+            "UpdateMatchRequest": {
+                "title": "Update Match request",
+                "description": "Update Match request body data",
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
             "UpdatePlayerRequest": {
                 "title": "Update Player request",
                 "description": "Update Player request body data",
@@ -783,6 +1307,13 @@
                     "name"
                 ],
                 "type": "object"
+            },
+            "MatchResource": {
+                "title": "MatchResource",
+                "description": "Match resource",
+                "xml": {
+                    "name": "MatchResource"
+                }
             },
             "TournamentResource": {
                 "title": "TournamentResource",
@@ -815,6 +1346,51 @@
             "Tournament": {
                 "title": "Tournament",
                 "description": "Tournament model",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "format": "string",
+                        "example": "Tournament name"
+                    },
+                    "date": {
+                        "type": "datetime",
+                        "format": "YYYY-MM-DD HH:MM:SS",
+                        "example": "2021-05-06 09:00:00"
+                    },
+                    "tempo": {
+                        "type": "integer",
+                        "example": "3"
+                    },
+                    "tempo_increment": {
+                        "type": "integer",
+                        "example": "2"
+                    },
+                    "rounds": {
+                        "type": "integer",
+                        "example": "15"
+                    },
+                    "description": {
+                        "type": "text",
+                        "example": "Description"
+                    },
+                    "image": {
+                        "type": "bytearray",
+                        "example": ""
+                    },
+                    "qr_hash": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "created_at": {
+                        "type": "timestamp",
+                        "example": "2021-05-06 09:00:00"
+                    },
+                    "updated_at": {
+                        "type": "timestamp",
+                        "example": "2021-05-06 09:00:00"
+                    }
+                },
+                "type": "object",
                 "xml": {
                     "name": "Tournament"
                 }
