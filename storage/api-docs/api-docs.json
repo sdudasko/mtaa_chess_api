@@ -483,6 +483,35 @@
                 }
             }
         },
+        "/matches/exportToPDF/{id}": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Export new round to PDF",
+                "description": "Stores file to the device.",
+                "operationId": "matchesExportToPDF",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Match id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                }
+            }
+        },
         "/tournaments": {
             "put": {
                 "tags": [

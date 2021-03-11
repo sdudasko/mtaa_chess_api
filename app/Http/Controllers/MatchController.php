@@ -245,4 +245,35 @@ class MatchController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Get(
+     *      path="/matches/exportToPDF/{id}",
+     *      operationId="matchesExportToPDF",
+     *      tags={"Matches"},
+     *      summary="Export new round to PDF",
+     *      description="Stores file to the device.",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Match id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     * )
+     */
+    public function exportToPDF(Match $match)
+    {
+        //
+    }
 }
