@@ -6,13 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
- *      title="Store Tournament request",
- *      description="Store Tournament request body data",
+ *      title="Update Player request",
+ *      description="Update Player request body data",
  *      type="object",
  *      required={"name"}
  * )
  */
-class StoreTournamentRequest extends FormRequest
+class UpdatePlayerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,7 +32,7 @@ class StoreTournamentRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string'
+            //
         ];
     }
 }

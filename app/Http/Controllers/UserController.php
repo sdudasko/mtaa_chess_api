@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateTournamentRequest;
-use App\Http\Resources\TournamentResource;
-use App\Models\Tournament;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 
-class TournamentController extends Controller
+class UserController extends Controller
 {
     /**
      * @OA\Get(
@@ -34,8 +34,8 @@ class TournamentController extends Controller
     {
         return new  UserResource(User::all());
     }
-	
-	
+
+
 	 /**
      * @OA\Get(
      *      path="/standings",
@@ -58,10 +58,10 @@ class TournamentController extends Controller
 	{
 		return new  UserResource(User::all());
 	}
-	
-	
+
+
     /**
-     * @OA\Put(
+     * @OA\Post(
      *      path="/players",
      *      operationId="storePlayer",
      *      tags={"Players"},
@@ -89,7 +89,7 @@ class TournamentController extends Controller
      *          description="Forbidden"
      *      )
      * )
-     */ 
+     */
     public function store()
     {
         //
@@ -99,7 +99,7 @@ class TournamentController extends Controller
      * @OA\Get(
      *      path="/Player/{id}",
      *      operationId="getPlayerById",
-     *      tags={"Player"},
+     *      tags={"Players"},
      *      summary="Get player information",
      *      description="Returns player data",
      *      @OA\Parameter(
@@ -138,7 +138,7 @@ class TournamentController extends Controller
      * @OA\Get(
      *      path="/Player/edit/{id}",
      *      operationId="editPlayerById",
-     *      tags={"Player"},
+     *      tags={"Players"},
      *      summary="Get player information",
      *      description="Returns player data",
      *      @OA\Parameter(
@@ -178,7 +178,7 @@ class TournamentController extends Controller
      * @OA\Put(
      *      path="/Player/{id}",
      *      operationId="updatePlayer",
-     *      tags={"Player"},
+     *      tags={"Players"},
      *      summary="Update existing player",
      *      description="Returns updated player data",
      *      @OA\Parameter(

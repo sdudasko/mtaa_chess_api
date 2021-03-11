@@ -213,6 +213,89 @@
                 }
             }
         },
+        "/matches": {
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Create new round",
+                "description": "Returns new round data",
+                "operationId": "storeMatch",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMatchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Match"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/matches/{id}": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Get match information",
+                "description": "Returns match data",
+                "operationId": "getMatchById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Match id",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Match"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
         "/tournaments": {
             "get": {
                 "tags": [
@@ -412,10 +495,255 @@
                     }
                 }
             }
+        },
+        "/players": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get list of players",
+                "description": "Returns list of players",
+                "operationId": "getPlayersList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Store new player",
+                "description": "Returns player data",
+                "operationId": "storePlayer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlayerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/standings": {
+            "get": {
+                "tags": [
+                    "Standings"
+                ],
+                "summary": "Get standings",
+                "description": "Returns standings",
+                "operationId": "getStandings",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/Player/{id}": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get player information",
+                "description": "Returns player data",
+                "operationId": "getPlayerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Player id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Update existing player",
+                "description": "Returns updated player data",
+                "operationId": "updatePlayer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Player id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePlayerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/Player/edit/{id}": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get player information",
+                "description": "Returns player data",
+                "operationId": "editPlayerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Player id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "StoreMatchRequest": {
+                "title": "Store Match request",
+                "description": "Store Match request body data",
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
+            "StorePlayerRequest": {
+                "title": "Store Player request",
+                "description": "Store User request body data",
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
             "StoreTournamentRequest": {
                 "title": "Store Tournament request",
                 "description": "Store Tournament request body data",
@@ -432,9 +760,25 @@
                 ],
                 "type": "object"
             },
+            "UpdatePlayerRequest": {
+                "title": "Update Player request",
+                "description": "Update Player request body data",
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
             "UpdateTournamentRequest": {
                 "title": "Update Tournament request",
                 "description": "Update Tournament request body data",
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
+            "UpdateUserRequest": {
+                "title": "Update User request",
+                "description": "Update User request body data",
                 "required": [
                     "name"
                 ],
@@ -447,11 +791,39 @@
                     "name": "TournamentResource"
                 }
             },
+            "UserResource": {
+                "title": "UserResource",
+                "description": "User resource",
+                "xml": {
+                    "name": "UserResource"
+                }
+            },
+            "Match": {
+                "title": "Match",
+                "description": "Match model",
+                "xml": {
+                    "name": "Match"
+                }
+            },
+            "Player": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    }
+                ]
+            },
             "Tournament": {
                 "title": "Tournament",
                 "description": "Tournament model",
                 "xml": {
                     "name": "Tournament"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "xml": {
+                    "name": "User"
                 }
             }
         }
