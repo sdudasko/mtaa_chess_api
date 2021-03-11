@@ -11,28 +11,60 @@ use Illuminate\Support\Facades\Auth;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('auth.login');
-    }
-
-    /**
      * Handle an incoming authentication request.
      *
      * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
+    /**
+     * @OA\Post(
+     *      path="/login",
+     *      operationId="login",
+     *      tags={"Login"},
+     *      summary="Handle an incoming authentication request.",
+     *      description="Logging in the user.",
+     *      @OA\Parameter(
+     *          name="email",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="email"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="password",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="password"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request"
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     * )
+     */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        //
+//        $request->authenticate();
+//
+//        $request->session()->regenerate();
+//
+//        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
@@ -41,14 +73,49 @@ class AuthenticatedSessionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
+    /**
+     * @OA\Post(
+     *      path="/logout",
+     *      operationId="logout",
+     *      tags={"Logout"},
+     *      summary="Destroy an authenticated session.",
+     *      description="Logging out the user.",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          required=false,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request"
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     * )
+     */
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+//        Auth::guard('web')->logout();
+//
+//        $request->session()->invalidate();
+//
+//        $request->session()->regenerateToken();
+//
+//        return redirect('/');
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }
