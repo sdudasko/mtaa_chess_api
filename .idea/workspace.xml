@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e43aa6da-9973-47ea-b620-ea783a4003eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MatchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MatchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/api-docs/api-docs.json" beforeDir="false" afterPath="$PROJECT_DIR$/storage/api-docs/api-docs.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,20 +18,23 @@
     <session id="20709489">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.1" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.1" value="4" />
+          <entry key="project.open.time.17" value="1" />
+          <entry key="project.open.time.2" value="1" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="dudasko/web/mtaa_chess_api/database/migrations" value="1" />
-          <entry key="env" value="2" />
+          <entry key="env" value="3" />
+          <entry key="gitignore" value="2" />
           <entry key="html" value="1" />
           <entry key="json" value="2" />
           <entry key="log" value="1" />
-          <entry key="php" value="125" />
+          <entry key="php" value="128" />
           <entry key="sql" value="4" />
         </counts>
       </usages-collector>
@@ -40,8 +42,8 @@
         <counts>
           <entry key="HTML" value="1" />
           <entry key="JSON" value="2" />
-          <entry key="PHP" value="125" />
-          <entry key="PLAIN_TEXT" value="3" />
+          <entry key="PHP" value="128" />
+          <entry key="PLAIN_TEXT" value="6" />
           <entry key="SQL" value="4" />
           <entry key="UML" value="1" />
         </counts>
@@ -49,13 +51,14 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="env" value="31" />
+          <entry key="gitignore" value="9" />
           <entry key="php" value="5180" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PHP" value="5180" />
-          <entry key="PLAIN_TEXT" value="31" />
+          <entry key="PLAIN_TEXT" value="40" />
         </counts>
       </usages-collector>
     </session>
@@ -63,13 +66,10 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/MatchController.php">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="249" column="14" selection-start-line="249" selection-start-column="14" selection-end-line="249" selection-end-column="14" />
-              <folding>
-                <element signature="e#40#81#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="480">
+              <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
             </state>
           </provider>
         </entry>
@@ -78,10 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>resources</find>
-      <find>Put</find>
-      <find>tou</find>
-      <find>Matchs</find>
       <find>StoreTournamentRequest</find>
       <find>@propert</find>
       <find>Wrong creden</find>
@@ -97,7 +93,6 @@
       <find>/pla</find>
       <find>bad re</find>
       <find>parame</find>
-      <find>422</find>
       <find>example</find>
       <find>overr</find>
       <find>overri</find>
@@ -108,6 +103,11 @@
       <find>para</find>
       <find>stan</find>
       <find>boolean</find>
+      <find>ven</find>
+      <find>L5_SWAGGER_CONST_HOST</find>
+      <find>post</find>
+      <find>422</find>
+      <find>destroy</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -155,6 +155,7 @@
         <option value="$PROJECT_DIR$/database/migrations/2021_03_10_162504_add_role_id_to_users_table.php" />
         <option value="$USER_HOME$/Downloads/mtaa3.sql" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/MatchController.php" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -288,15 +289,16 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="22" />
+    <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="838" />
+    <option name="height" value="837" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -345,7 +347,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -378,18 +379,23 @@
       <option name="presentableId" value="Default" />
       <updated>1614885900152</updated>
       <workItem from="1614885901661" duration="590000" />
-      <workItem from="1615387789507" duration="32715000" />
+      <workItem from="1615387789507" duration="32762000" />
+      <workItem from="1615539328513" duration="207000" />
+      <workItem from="1615553151437" duration="915000" />
+      <workItem from="1615570590780" duration="2626000" />
+      <workItem from="1616010401471" duration="384000" />
+      <workItem from="1616327878433" duration="820000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33305000" />
+    <option name="totallyTimeSpent" value="38304000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="837" extended-state="6" />
+    <frame x="-1" y="23" width="1440" height="837" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2811159" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.30114448" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -419,30 +425,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="uml://PHP//Users/stefan.dudasko/web/mtaa_chess_api/database/migrations">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>PHP</ID>
-          <OriginalElement>$PROJECT_DIR$/database/migrations</OriginalElement>
-          <nodes>
-            <node x="" y="">\CreateTournamentsTable</node>
-            <node x="" y="">\CreateFailedJobsTable</node>
-            <node x="" y="">\CreatePasswordResetsTable</node>
-            <node x="" y="">\AddRoleIdToUsersTable</node>
-            <node x="" y="">\CreateRolesTable</node>
-            <node x="" y="">\Illuminate\Database\Migrations\Migration</node>
-            <node x="" y="">\CreateUsersTable</node>
-            <node x="" y="">\CreateMatchesTable</node>
-          </nodes>
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="0.6172246675004393" x="699.7252781308931" y="46.400405620706465" />
-          <SelectedNodes />
-          <Categories />
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/database/migrations/2021_03_10_160941_create_roles_table.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="295">
@@ -457,20 +439,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/l5-swagger.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="198" column="12" selection-start-line="198" selection-start-column="12" selection-end-line="198" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TestController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="5" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TestController.php" />
     <entry file="file://$PROJECT_DIR$/app/Providers/RouteServiceProvider.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
@@ -503,13 +472,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="3" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.env">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="50" column="49" selection-start-line="50" selection-start-column="49" selection-end-line="50" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -580,9 +542,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="12" column="3" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
-          <folding>
-            <element signature="e#30#84#0#PHP" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -643,16 +602,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" column="44" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Controller.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-          <folding>
-            <element signature="e#40#97#0#PHP" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -751,9 +700,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="328">
           <caret line="194" column="38" selection-start-line="194" selection-start-column="38" selection-end-line="194" selection-end-column="38" />
-          <folding>
-            <element signature="e#40#80#0#PHP" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -785,23 +731,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config/l5-swagger.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="43" lean-forward="true" selection-start-line="7" selection-start-column="43" selection-end-line="7" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/TournamentController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="210" column="14" selection-start-line="205" selection-start-column="5" selection-end-line="210" selection-end-column="14" />
-          <folding>
-            <element signature="e#40#86#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="519">
+          <caret line="164" column="17" lean-forward="true" selection-start-line="164" selection-start-column="17" selection-end-line="164" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/MatchController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="249" column="14" selection-start-line="249" selection-start-column="14" selection-end-line="249" selection-end-column="14" />
+        <state relative-caret-position="427">
+          <caret line="248" column="7" selection-start-line="248" selection-start-column="7" selection-end-line="248" selection-end-column="7" />
           <folding>
             <element signature="e#40#81#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Controller.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.env">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="613">
+          <caret line="49" selection-start-line="49" selection-end-line="50" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
         </state>
       </provider>
     </entry>
