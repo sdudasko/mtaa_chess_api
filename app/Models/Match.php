@@ -17,4 +17,6 @@ use Illuminate\Database\Eloquent\Model;
 class Match extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['white', 'black', 'round', 'table', 'result'];
 }
