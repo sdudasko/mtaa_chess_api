@@ -19,7 +19,7 @@ class AddRoleIdToUsersTable extends Migration
             $table->integer('elo')->nullable();
             $table->string('category')->nullable();
             $table->string('title')->nullable();
-            $table->string('points')->nullable();
+            $table->float('points')->nullable();
         });
     }
 

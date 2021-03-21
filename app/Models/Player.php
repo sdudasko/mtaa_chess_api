@@ -13,4 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Player extends User
 {
+
+    public function matches()
+    {
+        return $this->belongsToMany(Match::class);
+    }
 }

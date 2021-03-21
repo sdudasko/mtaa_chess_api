@@ -19,25 +19,28 @@ class MatchService
         });
 
         $j = 0;
+
         for ( $i = 0; $i < $numberOfPlayers; $i += 2 ) {
 
             if ($j % 2 == 1) {
                 $match = Match::create([
                     'black' => $players->get($j)->id,
-                    'white' => $players->get($numberOfPlayers/2+$j)->id,
+                    'white' => $players->get($numberOfPlayers / 2 + $j)->id,
                 ]);
             } else {
                 $match = Match::create([
                     'white' => $players->get($j)->id,
-                    'black' => $players->get($numberOfPlayers/2+$j)->id,
+                    'black' => $players->get($numberOfPlayers / 2 + $j)->id,
                 ]);
             }
             $match->update([
-                'result' => null,
+                'result' => collect([0, 1, 2])->random(),
                 'round'  => $round,
                 'table'  => round(($i + 1) / 2),
             ]);
             $j++;
         }
+
+        app(PlayerService::class)->updatePoints($players);
     }
 }

@@ -19,4 +19,14 @@ class Match extends Model
     use HasFactory;
 
     protected $fillable = ['white', 'black', 'round', 'table', 'result'];
+
+    public function whitePlayer()
+    {
+        return $this->hasOne(User::class, 'id', 'white');
+    }
+
+    public function blackPlayer()
+    {
+        return $this->hasOne(User::class, 'id', 'black');
+    }
 }
