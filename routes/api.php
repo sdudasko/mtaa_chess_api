@@ -29,4 +29,6 @@ Route::group([
     Route::post('/matches/{match}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
 
+    Route::get('/players', 'UserController@index');
+    Route::put('/players', 'UserController@store');
 });

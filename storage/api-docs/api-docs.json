@@ -751,30 +751,54 @@
                                     {
                                         "id": 1,
                                         "name": "Jozef Nový",
+                                        "email": "carter.cheyenne@example.com",
+                                        "email_verified_at": "2021-03-25T11:47:13.000000Z",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z",
+                                        "role_id": "null",
                                         "elo": 2650,
+                                        "category": "CH24",
                                         "title": "GM",
-                                        "category": "CH24"
+                                        "points": "0"
                                     },
                                     {
                                         "id": 2,
                                         "name": "František Starý",
+                                        "email": "carter.cheyenne@example.com",
+                                        "email_verified_at": "2021-03-25T11:47:13.000000Z",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z",
+                                        "role_id": "null",
                                         "elo": 2600,
+                                        "category": "CH24",
                                         "title": "GM",
-                                        "category": "CH24"
+                                        "points": "0"
                                     },
                                     {
                                         "id": 3,
                                         "name": "Samuel Halčin",
+                                        "email": "carter.cheyenne@example.com",
+                                        "email_verified_at": "2021-03-25T11:47:13.000000Z",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z",
+                                        "role_id": "null",
                                         "elo": 2477,
+                                        "category": "CH18",
                                         "title": "IM",
-                                        "category": "CH18"
+                                        "points": "0"
                                     },
                                     {
                                         "id": 3,
                                         "name": "Anna Lizáková",
+                                        "email": "carter.cheyenne@example.com",
+                                        "email_verified_at": "2021-03-25T11:47:13.000000Z",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z",
+                                        "role_id": "null",
                                         "elo": 2311,
+                                        "category": "D18",
                                         "title": "FM",
-                                        "category": "D18"
+                                        "points": "0"
                                     }
                                 ]
                             }
@@ -782,7 +806,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "tags": [
                     "Players"
                 ],
@@ -805,11 +829,11 @@
                                     },
                                     "category": {
                                         "type": "string",
-                                        "example": "CH20"
+                                        "example": "CH18"
                                     },
                                     "title": {
                                         "type": "string",
-                                        "example": "null"
+                                        "example": null
                                     }
                                 },
                                 "type": "object"
@@ -838,7 +862,7 @@
                                         },
                                         "category": {
                                             "type": "string",
-                                            "example": "CH20"
+                                            "example": "CH18"
                                         },
                                         "title": {
                                             "type": "string",

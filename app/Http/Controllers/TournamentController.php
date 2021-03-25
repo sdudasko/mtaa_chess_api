@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
+use Illuminate\Support\Str;
 
 class TournamentController extends Controller
 {
@@ -64,7 +65,7 @@ class TournamentController extends Controller
         $tournament = Tournament::create($sanitized);
 
         $tournament->update([
-            'qr_hash' => str_random(32)
+            'qr_hash' => Str::random(40)
         ]);
 
         return response()->json($tournament, 201);

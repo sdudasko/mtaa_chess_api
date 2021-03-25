@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateMatchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Match;
+use App\Models\Category;
 use App\Models\Player;
 use App\Models\User;
-use App\Services\MatchService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -28,39 +30,66 @@ class UserController extends Controller
      *                    0: {
      *                          "id": 1,
      *                          "name": "Jozef Nový",
+     *                          "email": "carter.cheyenne@example.com",
+     *                          "email_verified_at": "2021-03-25T11:47:13.000000Z",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                          "role_id": "null",
      *                          "elo": 2650,
-     *                          "title": "GM",
      *                          "category": "CH24",
+     *                          "title": "GM",
+     *                          "points": "0"
      *                      },
      *                    1: {
      *                          "id": 2,
      *                          "name": "František Starý",
+     *                          "email": "carter.cheyenne@example.com",
+     *                          "email_verified_at": "2021-03-25T11:47:13.000000Z",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                          "role_id": "null",
      *                          "elo": 2600,
-     *                          "title": "GM",
      *                          "category": "CH24",
+     *                          "title": "GM",
+     *                          "points": "0"
      *                     },
      *                    2: {
      *                          "id": 3,
      *                          "name": "Samuel Halčin",
+     *                          "email": "carter.cheyenne@example.com",
+     *                          "email_verified_at": "2021-03-25T11:47:13.000000Z",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                          "role_id": "null",
      *                          "elo": 2477,
-     *                          "title": "IM",
      *                          "category": "CH18",
+     *                          "title": "IM",
+     *                          "points": "0"
      *                    },
      *                    3: {
      *                          "id": 3,
      *                          "name": "Anna Lizáková",
+     *                          "email": "carter.cheyenne@example.com",
+     *                          "email_verified_at": "2021-03-25T11:47:13.000000Z",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                          "role_id": "null",
      *                          "elo": 2311,
-     *                          "title": "FM",
      *                          "category": "D18",
+     *                          "title": "FM",
+     *                          "points": "0"
      *                    },
      *             }
      *          )
      *       ),
      *     )
      */
+
     public function index()
     {
-        return new  UserResource(User::all());
+        $users = User::where('role_id', null)->get();
+
+        return response()->json($users, 201);
     }
 
     /**
@@ -117,7 +146,7 @@ class UserController extends Controller
         //
     }
 
-	 /**
+    /**
      * @OA\Get(
      *      path="/standings",
      *      operationId="getStandings",
@@ -187,14 +216,14 @@ class UserController extends Controller
      *      )
      *     )
      */
-	public function standings()
-	{
-		return new  UserResource(User::all());
-	}
+    public function standings()
+    {
+        return new  UserResource(User::all());
+    }
 
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/players",
      *      operationId="storePlayer",
      *      tags={"Players"},
@@ -205,8 +234,8 @@ class UserController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="name", type="string", example="František Nový"),
      *              @OA\Property(property="elo", type="integer", example="1000"),
-     *              @OA\Property(property="category", type="string", example="CH20"),
-     *              @OA\Property(property="title", type="string", example="null"),
+     *              @OA\Property(property="category", type="string", example="CH18"),
+     *              @OA\Property(property="title", type="string", example=NULL),
      *          )
      *      ),
      *      @OA\Response(
@@ -216,7 +245,7 @@ class UserController extends Controller
      *              @OA\Property(property="id", type="integer", example="1"),
      *              @OA\Property(property="name", type="string", example="František Nový"),
      *              @OA\Property(property="elo", type="integer", example="1000"),
-     *              @OA\Property(property="category", type="string", example="CH20"),
+     *              @OA\Property(property="category", type="string", example="CH18"),
      *              @OA\Property(property="title", type="string", example="null"),
      *              @OA\Property(property="created_at", type="timestamp", example="2021-05-06 09:00:00"),
      *              @OA\Property(property="updated_at", type="timestamp", example="2021-05-06 09:00:00"),
@@ -232,9 +261,25 @@ class UserController extends Controller
      *      ),
      * )
      */
-    public function store(UpdateMatchRequest $request)
+    public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name'     => 'required|string',
+            'elo'      => 'required|integer',
+            'category' => ['required', 'string', Rule::in(Category::getCategories())],
+            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+            'email'    => 'email|unique:users,email',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $sanitized = $validator->validated();
+
+        $newUser = User::create($sanitized);
+
+        return $newUser;
     }
 
     /**
