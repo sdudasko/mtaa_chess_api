@@ -13,9 +13,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Player extends User
 {
+    protected $table = 'users';
 
-    public function matches()
+    public function matchesCustom()
     {
-        return $this->belongsToMany(Match::class);
+        return Match::where('black', $this->id)->orWhere('white', $this->id)->get();
     }
 }

@@ -1242,7 +1242,7 @@
                 }
             }
         },
-        "{id}/matches": {
+        "/players/{id}/matches": {
             "get": {
                 "tags": [
                     "Players"
@@ -1258,7 +1258,8 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
+                        },
+                        "example": 1
                     }
                 ],
                 "responses": {

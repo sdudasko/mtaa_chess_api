@@ -419,7 +419,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="{id}/matches",
+     *      path="/players/{id}/matches",
      *      operationId="getPlayerMatches",
      *      tags={"Players"},
      *      summary="Get list of player's matches. (User with id 2 in the example.)",
@@ -429,6 +429,7 @@ class UserController extends Controller
      *          description="Player id",
      *          required=true,
      *          in="path",
+     *          example=1,
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -474,8 +475,8 @@ class UserController extends Controller
      */
     public function getPlayerGames(Player $player)
     {
-        //
+        $matches = $player->matchesCustom();
 
+        return response()->json($matches, 201);
     }
-
 }
