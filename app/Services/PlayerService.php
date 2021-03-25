@@ -8,9 +8,9 @@ use Illuminate\Support\Collection;
 
 class PlayerService
 {
-    public function updatePoints(Collection $players)
+    public function updatePoints($round)
     {
-        Match::all()
+        Match::where('round', $round)->get()
             ->each(function ($match) {
 
                 $pointsByResult = $match->result;
@@ -32,7 +32,7 @@ class PlayerService
                     ]);
                 }
             });
-        
+
         $sumPoints = User::all()->sum(function($user) {
             return $user->points;
         });

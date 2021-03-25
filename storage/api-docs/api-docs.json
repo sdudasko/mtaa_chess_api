@@ -272,32 +272,44 @@
                                 },
                                 "example": [
                                     {
-                                        "table": 1,
+                                        "id": 1,
                                         "white": 3,
                                         "black": 8,
                                         "result": null,
-                                        "round": 5
+                                        "round": 5,
+                                        "table": 1,
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
                                     },
                                     {
-                                        "table": 2,
+                                        "id": 2,
                                         "white": 4,
                                         "black": 9,
                                         "result": 1,
-                                        "round": 5
+                                        "round": 5,
+                                        "table": 2,
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
                                     },
                                     {
+                                        "id": 3,
                                         "table": 3,
                                         "white": 5,
                                         "black": 10,
                                         "result": 2,
-                                        "round": 5
+                                        "round": 5,
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
                                     },
                                     {
+                                        "id": 4,
                                         "table": 4,
                                         "white": 6,
                                         "black": 11,
                                         "result": 0,
-                                        "round": 5
+                                        "round": 5,
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
                                     }
                                 ]
                             }
@@ -369,67 +381,6 @@
             }
         },
         "/matches/{id}": {
-            "get": {
-                "tags": [
-                    "Matches"
-                ],
-                "summary": "Get list of player's matches. (User with id 2 in the example.)",
-                "description": "Returns list of player's matches",
-                "operationId": "getPlayerMatches",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Player id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                },
-                                "example": [
-                                    {
-                                        "table": 1,
-                                        "white": 2,
-                                        "black": 8,
-                                        "result": 3,
-                                        "round": 1
-                                    },
-                                    {
-                                        "table": 2,
-                                        "white": 9,
-                                        "black": 2,
-                                        "result": 1,
-                                        "round": 2
-                                    },
-                                    {
-                                        "table": 3,
-                                        "white": 2,
-                                        "black": 10,
-                                        "result": 2,
-                                        "round": 3
-                                    },
-                                    {
-                                        "table": 4,
-                                        "white": 11,
-                                        "black": 2,
-                                        "result": 0,
-                                        "round": 4
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "Matches"
@@ -451,15 +402,12 @@
                         "name": "result",
                         "in": "query",
                         "description": "Match result",
-                        "required": true
+                        "required": false
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -1266,6 +1214,69 @@
                     },
                     "403": {
                         "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "{id}/matches": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get list of player's matches. (User with id 2 in the example.)",
+                "description": "Returns list of player's matches",
+                "operationId": "getPlayerMatches",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Player id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": [
+                                    {
+                                        "table": 1,
+                                        "white": 2,
+                                        "black": 8,
+                                        "result": 3,
+                                        "round": 1
+                                    },
+                                    {
+                                        "table": 2,
+                                        "white": 9,
+                                        "black": 2,
+                                        "result": 1,
+                                        "round": 2
+                                    },
+                                    {
+                                        "table": 3,
+                                        "white": 2,
+                                        "black": 10,
+                                        "result": 2,
+                                        "round": 3
+                                    },
+                                    {
+                                        "table": 4,
+                                        "white": 11,
+                                        "black": 2,
+                                        "result": 0,
+                                        "round": 4
+                                    }
+                                ]
+                            }
+                        }
                     }
                 }
             }

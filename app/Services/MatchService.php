@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class MatchService
 {
-    public static function generateBySwissSystem(Collection $players, $round = 1)
+    public static function generateBySwissSystem(Collection $players, $round = 1, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
 
@@ -34,13 +34,31 @@ class MatchService
                 ]);
             }
             $match->update([
-                'result' => collect([0, 1, 2])->random(),
+                'result' => $updatePoints ? collect([0, 1, 2])->random() : null,
                 'round'  => $round,
                 'table'  => round(($i + 1) / 2),
             ]);
             $j++;
         }
 
-        app(PlayerService::class)->updatePoints($players);
+        if ($updatePoints) {
+            app(PlayerService::class)->updatePoints($round);
+        }
+
+        $matchesForRound = Match::where('round', $round)->get();
+
+        return $matchesForRound;
     }
+
+    public function getPointsByResult($result)
+    {
+        if ($result == 1) {
+            return 1;
+        } else if ($result == 2) {
+            return 0.5;
+        } else {
+            return 0;
+        }
+    }
+
 }

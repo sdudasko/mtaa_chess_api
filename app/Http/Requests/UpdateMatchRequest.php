@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * @OA\Schema(
@@ -21,7 +22,7 @@ class UpdateMatchRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,7 +33,8 @@ class UpdateMatchRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'id'     => 'required|integer',
+            'result' => ['required', 'integer', Rule::in([1, 2, 3])],
         ];
     }
 }

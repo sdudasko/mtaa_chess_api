@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
@@ -56,9 +57,17 @@ class TournamentController extends Controller
      * )
      */
 
-    public function store()
+    public function store(StoreTournamentRequest $request)
     {
-        //
+        $sanitized = $request->validated();
+
+        $tournament = Tournament::create($sanitized);
+
+        $tournament->update([
+            'qr_hash' => str_random(32)
+        ]);
+
+        return response()->json($tournament, 201);
     }
 
     /**
