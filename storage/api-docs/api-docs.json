@@ -1022,7 +1022,7 @@
                 }
             }
         },
-        "/Player/{id}": {
+        "/players/{id}": {
             "get": {
                 "tags": [
                     "Players"
@@ -1038,7 +1038,8 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
+                        },
+                        "example": 1
                     }
                 ],
                 "responses": {
@@ -1056,6 +1057,26 @@
                                             "type": "string",
                                             "example": "František Nový"
                                         },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "example@gmail.com"
+                                        },
+                                        "email_verified_at": {
+                                            "type": "string",
+                                            "example": "2021-03-25T17:31:07.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        },
+                                        "updated_at": {
+                                            "type": "timestamp",
+                                            "example": "2021-05-06 09:00:00"
+                                        },
+                                        "role_id": {
+                                            "type": "integer",
+                                            "example": null
+                                        },
                                         "elo": {
                                             "type": "integer",
                                             "example": "1000"
@@ -1071,14 +1092,6 @@
                                         "points": {
                                             "type": "integer",
                                             "example": 9
-                                        },
-                                        "created_at": {
-                                            "type": "timestamp",
-                                            "example": "2021-05-06 09:00:00"
-                                        },
-                                        "updated_at": {
-                                            "type": "timestamp",
-                                            "example": "2021-05-06 09:00:00"
                                         }
                                     },
                                     "type": "object"
@@ -1093,12 +1106,14 @@
                         "description": "Unauthenticated"
                     }
                 }
-            },
+            }
+        },
+        "/Player/{id}": {
             "put": {
                 "tags": [
                     "Players"
                 ],
-                "summary": "Overrides existing tournament values.",
+                "summary": "Overrides existing player values.",
                 "description": "Returns updated player data",
                 "operationId": "updatePlayer",
                 "requestBody": {

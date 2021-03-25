@@ -31,5 +31,6 @@ Route::group([
 
     Route::get('/players', 'UserController@index');
     Route::put('/players', 'UserController@store');
+    Route::get('/players/{player}', 'UserController@show');
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
 });

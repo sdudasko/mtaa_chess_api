@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Category;
 use App\Models\Player;
 use App\Models\User;
+use App\Services\PlayerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -284,7 +285,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/Player/{id}",
+     *      path="/players/{id}",
      *      operationId="getPlayerById",
      *      tags={"Players"},
      *      summary="Get player information",
@@ -294,6 +295,7 @@ class UserController extends Controller
      *          description="Player id",
      *          required=true,
      *          in="path",
+     *          example=1,
      *          @OA\Schema(
      *              type="integer"
      *          )
@@ -304,12 +306,15 @@ class UserController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="id", type="integer", example="1"),
      *              @OA\Property(property="name", type="string", example="František Nový"),
+     *              @OA\Property(property="email", type="string", example="example@gmail.com"),
+     *              @OA\Property(property="email_verified_at", type="string", example="2021-03-25T17:31:07.000000Z"),
+     *              @OA\Property(property="created_at", type="timestamp", example="2021-05-06 09:00:00"),
+     *              @OA\Property(property="updated_at", type="timestamp", example="2021-05-06 09:00:00"),
+     *              @OA\Property(property="role_id", type="integer", example=NULL),
      *              @OA\Property(property="elo", type="integer", example="1000"),
      *              @OA\Property(property="category", type="string", example="CH20"),
      *              @OA\Property(property="title", type="string", example="null"),
      *              @OA\Property(property="points", type="integer", example=9),
-     *              @OA\Property(property="created_at", type="timestamp", example="2021-05-06 09:00:00"),
-     *              @OA\Property(property="updated_at", type="timestamp", example="2021-05-06 09:00:00"),
      *          )
      *       ),
      *      @OA\Response(
@@ -322,9 +327,9 @@ class UserController extends Controller
      *      ),
      * )
      */
-    public function show(User $user)
+    public function show(Player $player)
     {
-        //
+        return response()->json($player, 201);
     }
 
     /**
@@ -332,7 +337,7 @@ class UserController extends Controller
      *      path="/Player/{id}",
      *      operationId="updatePlayer",
      *      tags={"Players"},
-     *      summary="Overrides existing tournament values.",
+     *      summary="Overrides existing player values.",
      *      description="Returns updated player data",
      *      @OA\RequestBody(
      *          required=true,
