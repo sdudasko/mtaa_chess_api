@@ -253,8 +253,8 @@ class MatchController extends Controller
      *      summary="Export new round to PDF",
      *      description="Stores file to the device.",
      *      @OA\Parameter(
-     *          name="id",
-     *          description="Match id",
+     *          name="round",
+     *          description="Round",
      *          required=true,
      *          in="path",
      *          @OA\Schema(

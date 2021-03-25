@@ -35,4 +35,17 @@ class Match extends Model
     {
         return app(MatchService::class)->getPointsByResult($this->result);
     }
+
+    public function getFromattedResult()
+    {
+        $points = app(MatchService::class)->getPointsByResult($this->result);
+
+        if ($points == 0) {
+            return '0 - 1';
+        } else if ($points == 1) {
+            return '1 - 0';
+        } else {
+            return '1/2 - 1/2';
+        }
+    }
 }

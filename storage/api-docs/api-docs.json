@@ -431,7 +431,7 @@
                 }
             }
         },
-        "/matches/exportToPDF/{id}": {
+        "/matches/exportToPDF/{round}": {
             "get": {
                 "tags": [
                     "Matches"
@@ -441,9 +441,9 @@
                 "operationId": "matchesExportToPDF",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "round",
                         "in": "path",
-                        "description": "Match id",
+                        "description": "Round",
                         "required": true,
                         "schema": {
                             "type": "integer"

@@ -1,3 +1,19 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+th,td,tr {
+    border:1px solid black;
+    border-collapse:collapse;
+}
+
+table {
+    border:2px solid black;
+    border-collapse:collapse;
+    width: 100%;
+}
+
+td {
+    font-family:Arial;
+    font-size:11px;
+}

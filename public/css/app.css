@@ -31432,6 +31432,22 @@ select {
           animation: bounce 1s infinite;
 }
 
+th,td,tr {
+  border:1px solid black;
+  border-collapse:collapse;
+}
+
+table {
+  border:2px solid black;
+  border-collapse:collapse;
+  width: 100%;
+}
+
+td {
+  font-family:Arial;
+  font-size:11px;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
@@ -184466,4 +184482,3 @@ select {
             animation: bounce 1s infinite;
   }
 }
-
