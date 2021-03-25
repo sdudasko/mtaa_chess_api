@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateMatchRequest;
 use App\Models\Match;
-use App\Models\Player;
+use App\Models\User;
+use App\Services\MatchService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class MatchController extends Controller
 {
@@ -31,32 +35,46 @@ class MatchController extends Controller
      *              type="object",
      *              example={
      *                    0: {
-     *                          "table": 1,
+     *                          "id": 1,
      *                          "white": 3,
      *                          "black": 8,
      *                          "result": null,
      *                          "round": 5,
+     *                          "table": 1,
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
      *                      },
      *                    1: {
-     *                          "table": 2,
+     *                          "id": 2,
      *                          "white": 4,
      *                          "black": 9,
      *                          "result": 1,
      *                          "round": 5,
+     *                          "table": 2,
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
      *                     },
      *                    2: {
+     *                          "id": 3,
      *                          "table": 3,
      *                          "white": 5,
      *                          "black": 10,
      *                          "result": 2,
      *                          "round": 5,
+     *                          "table": 3,
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
      *                    },
      *                    3: {
+     *                          "id": 4,
      *                          "table": 4,
      *                          "white": 6,
      *                          "black": 11,
      *                          "result": 0,
      *                          "round": 5,
+     *                          "table": 4,
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
      *                    },
      *             }
      *          )
@@ -67,71 +85,19 @@ class MatchController extends Controller
      *      ),
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $sanitized = Validator::make($request->all(), [
+            'round' => 'nullable|integer',
+        ])->validated();
 
-    }
+        if (isset($sanitized['round']) && $sanitized['round']) {
+            $matches = Match::where('round', $sanitized['round'])->get();
+        } else {
+            $matches = Match::all();
+        }
 
-    /**
-     * @OA\Get(
-     *      path="/matches/{id}",
-     *      operationId="getPlayerMatches",
-     *      tags={"Matches"},
-     *      summary="Get list of player's matches. (User with id 2 in the example.)",
-     *      description="Returns list of player's matches",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Player id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful operation",
-     *           @OA\JsonContent(
-     *              type="object",
-     *              example={
-     *                    0: {
-     *                          "table": 1,
-     *                          "white": 2,
-     *                          "black": 8,
-     *                          "result": 3,
-     *                          "round": 1,
-     *                      },
-     *                    1: {
-     *                          "table": 2,
-     *                          "white": 9,
-     *                          "black": 2,
-     *                          "result": 1,
-     *                          "round": 2,
-     *                     },
-     *                    2: {
-     *                          "table": 3,
-     *                          "white": 2,
-     *                          "black": 10,
-     *                          "result": 2,
-     *                          "round": 3,
-     *                    },
-     *                    3: {
-     *                          "table": 4,
-     *                          "white": 11,
-     *                          "black": 2,
-     *                          "result": 0,
-     *                          "round": 4,
-     *                    },
-     *             }
-     *          )
-     *       ),
-     *     )
-     */
-    public function getPlayerGames(Player $player)
-    {
-        //
-
+        return response()->json($matches, 201);
     }
 
     /**
@@ -194,7 +160,23 @@ class MatchController extends Controller
      */
     public function store()
     {
-        //
+        $players = User::where("role_id", null)->get();
+
+        $lastRoundMatches = Match::all();
+
+        $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
+            return $match->result == null;
+        }, false);
+
+        if ($foundMatchInProgress != null) {
+            return response()->json([], 403);
+        }
+
+        $lastRound = $lastRoundMatches->sortByDesc('round')->first()->round;
+
+        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1);
+
+        return response()->json($generatedMatches, 201);
     }
 
     /**
@@ -216,7 +198,7 @@ class MatchController extends Controller
      *      @OA\Parameter(
      *          name="result",
      *          description="Match result",
-     *          required=true,
+     *          required=false,
      *          in="query",
      *          @OA\Property(property="result", type="integer", example="1")
      *      ),
@@ -224,10 +206,6 @@ class MatchController extends Controller
      *          response=200,
      *          description="Successful operation",
      *       ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
      *      @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
@@ -241,21 +219,42 @@ class MatchController extends Controller
      *  )
      * )
      */
-    public function update(UpdateMatchRequest $request, Match $match)
+    public function update(Request $request, Match $match)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'result' => ['required', 'integer', Rule::in([0, 1, 2])],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $sanitized = $validator->validated();
+
+        $matchService = (new MatchService());
+        $match->update($sanitized);
+
+        $match->blackPlayer->update([
+            'points' => $matchService->getPointsByResult($sanitized['result']),
+        ]);
+        $match->whitePlayer->update([
+            'points' => $matchService->getPointsByResult($sanitized['result']),
+        ]);
+
+        return response()->json([], 200);
+
     }
 
     /**
      * @OA\Get(
-     *      path="/matches/exportToPDF/{id}",
+     *      path="/matches/exportToPDF/{round}",
      *      operationId="matchesExportToPDF",
      *      tags={"Matches"},
      *      summary="Export new round to PDF",
      *      description="Stores file to the device.",
      *      @OA\Parameter(
-     *          name="id",
-     *          description="Match id",
+     *          name="round",
+     *          description="Round",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -272,8 +271,16 @@ class MatchController extends Controller
      *      ),
      * )
      */
-    public function exportToPDF(Match $match)
+    public function exportToPDF($round)
     {
-        //
+        $matches = Match::where('round', $round)->get();
+
+        $pdf = PDF::loadView('pdf.match',
+            [
+                'matches' => $matches,
+                'round'   => $round,
+            ]);
+
+        return $pdf->download('match.pdf');
     }
 }

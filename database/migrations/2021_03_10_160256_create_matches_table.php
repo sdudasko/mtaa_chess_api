@@ -20,8 +20,8 @@ class CreateMatchesTable extends Migration
             $table->integer('black');
             $table->foreign('black')->references('id')->on('users')->onDelete('cascade');
             $table->integer("result")->nullable();
-            $table->integer('round');
-            $table->integer('table');
+            $table->integer('round')->nullable();
+            $table->integer('table')->nullable();
             $table->timestamps();
         });
     }

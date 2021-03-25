@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,10 +20,13 @@ use Illuminate\Support\Facades\Route;
 //Route::get("/tournaments", 'App\Http\Controllers\TournamentController@index');
 
 Route::group([
-//    'prefix'     => 'v1',
-//    'as'         => 'api.',
-    'namespace'  => 'App\Http\Controllers',
-    'middleware' => [],
+    'namespace' => 'App\Http\Controllers',
 ], function () {
     Route::apiResource('tournaments', 'TournamentController');
+
+    Route::put('/matches', 'MatchController@store');
+    Route::get('/matches', 'MatchController@index');
+    Route::post('/matches/{match}', 'MatchController@update');
+    Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
+
 });

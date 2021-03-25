@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateMatchRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Match;
+use App\Models\Player;
 use App\Models\User;
+use App\Services\MatchService;
 
 class UserController extends Controller
 {
@@ -228,9 +232,9 @@ class UserController extends Controller
      *      ),
      * )
      */
-    public function store()
+    public function store(UpdateMatchRequest $request)
     {
-        //
+
     }
 
     /**
@@ -366,6 +370,67 @@ class UserController extends Controller
     public function checkPlayerId(string $hash)
     {
         //
+    }
+
+    /**
+     * @OA\Get(
+     *      path="{id}/matches",
+     *      operationId="getPlayerMatches",
+     *      tags={"Players"},
+     *      summary="Get list of player's matches. (User with id 2 in the example.)",
+     *      description="Returns list of player's matches",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Player id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              example={
+     *                    0: {
+     *                          "table": 1,
+     *                          "white": 2,
+     *                          "black": 8,
+     *                          "result": 3,
+     *                          "round": 1,
+     *                      },
+     *                    1: {
+     *                          "table": 2,
+     *                          "white": 9,
+     *                          "black": 2,
+     *                          "result": 1,
+     *                          "round": 2,
+     *                     },
+     *                    2: {
+     *                          "table": 3,
+     *                          "white": 2,
+     *                          "black": 10,
+     *                          "result": 2,
+     *                          "round": 3,
+     *                    },
+     *                    3: {
+     *                          "table": 4,
+     *                          "white": 11,
+     *                          "black": 2,
+     *                          "result": 0,
+     *                          "round": 4,
+     *                    },
+     *             }
+     *          )
+     *       ),
+     *     )
+     */
+    public function getPlayerGames(Player $player)
+    {
+        //
+
     }
 
 }

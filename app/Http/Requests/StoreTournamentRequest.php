@@ -32,7 +32,12 @@ class StoreTournamentRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string'
+            'title'           => 'required|string',
+            'date'            => 'nullable|date',
+            'tempo'           => 'required|integer',
+            'tempo_increment' => 'nullable|integer',
+            'rounds'          => 'required|integer',
+            'description'     => 'nullable|string',
         ];
     }
 }
