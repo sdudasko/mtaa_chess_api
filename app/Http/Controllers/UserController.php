@@ -334,21 +334,28 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/Player/{id}",
+     *      path="/players/{id}",
      *      operationId="updatePlayer",
      *      tags={"Players"},
      *      summary="Overrides existing player values.",
      *      description="Returns updated player data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Player id",
+     *          required=true,
+     *          in="path",
+     *          example=1,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="integer", example="1"),
      *              @OA\Property(property="name", type="string", example="František Nový"),
      *              @OA\Property(property="elo", type="integer", example="1000"),
-     *              @OA\Property(property="category", type="string", example="CH20"),
-     *              @OA\Property(property="title", type="string", example="null"),
-     *              @OA\Property(property="created_at", type="timestamp", example="2021-05-06 09:00:00"),
-     *              @OA\Property(property="updated_at", type="timestamp", example="2021-05-06 09:00:00"),
+     *              @OA\Property(property="category", type="string", example="CH18"),
+     *              @OA\Property(property="title", type="string", example="GM"),
      *          )
      *      ),
      *      @OA\Response(
@@ -358,7 +365,7 @@ class UserController extends Controller
      *              @OA\Property(property="id", type="integer", example="1"),
      *              @OA\Property(property="name", type="string", example="František Nový"),
      *              @OA\Property(property="elo", type="integer", example="1000"),
-     *              @OA\Property(property="category", type="string", example="CH20"),
+     *              @OA\Property(property="category", type="string", example="CH18"),
      *              @OA\Property(property="title", type="string", example="null"),
      *              @OA\Property(property="created_at", type="timestamp", example="2021-05-06 09:00:00"),
      *              @OA\Property(property="updated_at", type="timestamp", example="2021-05-06 09:00:00"),
@@ -374,9 +381,24 @@ class UserController extends Controller
      *      ),
      * )
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, Player $player)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name'     => 'nullable|string',
+            'elo'      => 'nullable|integer',
+            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
+            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $sanitized = $validator->validated();
+
+        $player->update($sanitized);
+
+        return response()->json($player, 201);
     }
 
     /**

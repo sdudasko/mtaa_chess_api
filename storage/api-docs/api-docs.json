@@ -1106,9 +1106,7 @@
                         "description": "Unauthenticated"
                     }
                 }
-            }
-        },
-        "/Player/{id}": {
+            },
             "put": {
                 "tags": [
                     "Players"
@@ -1116,16 +1114,24 @@
                 "summary": "Overrides existing player values.",
                 "description": "Returns updated player data",
                 "operationId": "updatePlayer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Player id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
                                     "name": {
                                         "type": "string",
                                         "example": "František Nový"
@@ -1136,19 +1142,11 @@
                                     },
                                     "category": {
                                         "type": "string",
-                                        "example": "CH20"
+                                        "example": "CH18"
                                     },
                                     "title": {
                                         "type": "string",
-                                        "example": "null"
-                                    },
-                                    "created_at": {
-                                        "type": "timestamp",
-                                        "example": "2021-05-06 09:00:00"
-                                    },
-                                    "updated_at": {
-                                        "type": "timestamp",
-                                        "example": "2021-05-06 09:00:00"
+                                        "example": "GM"
                                     }
                                 },
                                 "type": "object"
@@ -1177,7 +1175,7 @@
                                         },
                                         "category": {
                                             "type": "string",
-                                            "example": "CH20"
+                                            "example": "CH18"
                                         },
                                         "title": {
                                             "type": "string",

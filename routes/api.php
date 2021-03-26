@@ -33,4 +33,5 @@ Route::group([
     Route::put('/players', 'UserController@store');
     Route::get('/players/{player}', 'UserController@show');
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
+    Route::put('/players/{player}', 'UserController@update');
 });

@@ -31,7 +31,8 @@ class User extends Authenticatable
         'password',
         'role_id',
         'elo',
-        'title'
+        'title',
+        'category',
     ];
 
     /**
