@@ -61,7 +61,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Invalid request body.",
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -896,7 +896,7 @@
                 }
             }
         },
-        "/players/storeBulk": {
+        "/players/import/storeBulk": {
             "put": {
                 "tags": [
                     "Players"
@@ -905,38 +905,39 @@
                 "description": "Returns whether operation was successful.",
                 "operationId": "storeBulkPlayers",
                 "requestBody": {
+                    "description": "Bulk players Body",
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
+                                "properties": {
+                                    "players": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "first_name": {
+                                                    "type": "string"
+                                                },
+                                                "last_name": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "type": "string"
+                                                },
+                                                "resume": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
                                 "type": "object"
-                            },
-                            "example": [
-                                {
-                                    "name": "Jozef Nový",
-                                    "elo": 2650,
-                                    "title": "GM",
-                                    "category": "CH24"
-                                },
-                                {
-                                    "name": "František Starý",
-                                    "elo": 2600,
-                                    "title": "GM",
-                                    "category": "CH24"
-                                },
-                                {
-                                    "name": "Samuel Halčin",
-                                    "elo": 2477,
-                                    "title": "IM",
-                                    "category": "CH18"
-                                },
-                                {
-                                    "name": "Anna Lizáková",
-                                    "elo": 2311,
-                                    "title": "FM",
-                                    "category": "D18"
-                                }
-                            ]
+                            }
                         }
                     }
                 },

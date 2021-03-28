@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Imports\PlayersImport;
+use App\Imports\TransactionsImport;
 use App\Models\Category;
 use App\Models\Player;
 use App\Models\User;
-use App\Services\PlayerService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -95,44 +94,32 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Put(
-     *      path="/players/storeBulk",
+     * @OA\Post(
+     *      path="/players/import/storeBulk",
      *      operationId="storeBulkPlayers",
      *      tags={"Players"},
      *      summary="Store list of players",
      *      description="Returns whether operation was successful.",
      *      @OA\RequestBody(
-     *          required=true,
-     *           @OA\JsonContent(
-     *              type="object",
-     *              example={
-     *                    0: {
-     *                          "name": "Jozef Nový",
-     *                          "elo": 2650,
-     *                          "title": "GM",
-     *                          "category": "CH24",
-     *                      },
-     *                    1: {
-     *                          "name": "František Starý",
-     *                          "elo": 2600,
-     *                          "title": "GM",
-     *                          "category": "CH24",
-     *                     },
-     *                    2: {
-     *                          "name": "Samuel Halčin",
-     *                          "elo": 2477,
-     *                          "title": "IM",
-     *                          "category": "CH18",
-     *                    },
-     *                    3: {
-     *                          "name": "Anna Lizáková",
-     *                          "elo": 2311,
-     *                          "title": "FM",
-     *                          "category": "D18",
-     *                    },
-     *             }
+     *      required=true,
+     *      description="Bulk players Body",
+     *      @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="players",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="first_name", type="string"),
+     *                      @OA\Property(property="last_name", type="string"),
+     *                      @OA\Property(property="email", type="string"),
+     *                      @OA\Property(property="phone", type="string"),
+     *                      @OA\Property(property="resume", type="string", format="binary"),
+     *                  )
+     *              )
      *          )
-     *       ),
+     *      )
+     *   ),
      *       @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -145,7 +132,31 @@ class UserController extends Controller
      */
     public function storeBulk(Request $request)
     {
-        (new PlayerService())->import($request);
+        Excel::import(new PlayersImport(), $request->import_file);
+
+        \Session::put('success', 'Your file is imported successfully in database.');
+
+        return response()->json([], 204);
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function importExportView()
+    {
+        return view('excel.index');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function importExcel(Request $request)
+    {
+        \Excel::import(new TransactionsImport, $request->import_file);
+
+        \Session::put('success', 'Your file is imported successfully in database.');
+
+        return back();
     }
 
     /**

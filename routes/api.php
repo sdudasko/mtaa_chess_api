@@ -34,6 +34,7 @@ Route::group([
     Route::get('/players/{player}', 'UserController@show');
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
     Route::put('/players/{player}', 'UserController@update');
+    Route::post('/players/import/storeBulk', 'UserController@storeBulk');
 });
 
 Route::post('/register/passport', 'App\Http\Controllers\Api\AuthController@register');
