@@ -19,7 +19,7 @@
         }
     ],
     "paths": {
-        "/login": {
+        "/login/passport": {
             "post": {
                 "tags": [
                     "Auth"
@@ -33,7 +33,7 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "email"
+                            "type": "string"
                         }
                     },
                     {
@@ -41,7 +41,7 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "password"
+                            "type": "string"
                         }
                     }
                 ],

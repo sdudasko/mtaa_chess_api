@@ -24,7 +24,7 @@ Route::group([
 ], function () {
     Route::apiResource('tournaments', 'TournamentController');
 
-    Route::put('/matches', 'MatchController@store');
+    Route::put('/matches', 'MatchController@store')->middleware('auth:api');
     Route::get('/matches', 'MatchController@index');
     Route::post('/matches/{match}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
@@ -35,3 +35,10 @@ Route::group([
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
     Route::put('/players/{player}', 'UserController@update');
 });
+
+Route::post('/register/passport', 'App\Http\Controllers\Api\AuthController@register');
+Route::post('/login/passport', 'App\Http\Controllers\Api\AuthController@login');
+Route::post('/logout/passport','App\Http\Controllers\Api\AuthController@logoutApi')->middleware('auth:api');
+
+
+Route::get('/login', 'App\Http\Controllers\Api\AuthController@loginShow')->name('loginShow');

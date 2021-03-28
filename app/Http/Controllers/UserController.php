@@ -9,6 +9,7 @@ use App\Models\Player;
 use App\Models\User;
 use App\Services\PlayerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
