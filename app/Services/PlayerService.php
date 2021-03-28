@@ -37,4 +37,10 @@ class PlayerService
             return $user->points;
         });
     }
+
+    public function import($request)
+    {
+        
+    }
+
 }

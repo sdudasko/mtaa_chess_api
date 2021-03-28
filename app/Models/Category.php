@@ -11,6 +11,10 @@ class Category extends Model
 
     public static function getCategories()
     {
-        return ['D09', 'D14', 'D18', 'D24', 'CH09', 'CH14', 'CH18', 'CH24'];
+        return [
+            'D09', 'D14', 'D18', 'D24',
+            'CH09', 'CH14', 'CH18', 'CH24',
+            'CBK', 'DBK'
+        ];
     }
 }

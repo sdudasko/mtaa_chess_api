@@ -143,9 +143,9 @@ class UserController extends Controller
      *       ),
      *     )
      */
-    public function storeBulk()
+    public function storeBulk(Request $request)
     {
-        //
+        (new PlayerService())->import($request);
     }
 
     /**
