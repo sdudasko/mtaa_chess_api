@@ -9,6 +9,49 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *      path="/register/passport",
+     *      operationId="registerUser",
+     *      tags={"Auth"},
+     *      summary="Register a new user",
+     *      description="Returns new user data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"email","password"},
+     *              @OA\Property(property="email", type="email", example="xuser@stuba.sk"),
+     *              @OA\Property(property="name", type="email", example="xuser"),
+     *              @OA\Property(property="password", type="password", example="password"),
+     *              @OA\Property(property="password_confirmation", type="password", example="password"),
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Success",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              example={
+     *                    "user": {
+     *                          "name": "xuser",
+     *                          "email": "xuser@stuba.sk",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "id": 1
+     *                    },
+     *                    "access_token": "..."
+     *               }
+     *        )
+     *     ),
+     *     @OA\Response(
+     *          response=422,
+     *          description="Invalid request body.",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Sorry, invalid request body.")
+     *        )
+     *     )
+     * )
+     */
     public function register(Request $request)
     {
         $validatedData = $request->validate([

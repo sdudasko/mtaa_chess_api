@@ -19,6 +19,86 @@
         }
     ],
     "paths": {
+        "/register/passport": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "description": "Returns new user data",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "email",
+                                        "example": "xuser@stuba.sk"
+                                    },
+                                    "name": {
+                                        "type": "email",
+                                        "example": "xuser"
+                                    },
+                                    "password": {
+                                        "type": "password",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "user": {
+                                        "name": "xuser",
+                                        "email": "xuser@stuba.sk",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "id": 1
+                                    },
+                                    "access_token": "..."
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sorry, invalid request body."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/login/passport": {
             "post": {
                 "tags": [
@@ -69,12 +149,12 @@
                 }
             }
         },
-        "/logout": {
+        "/logout/passport": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Destroy an authenticated session.",
+                "summary": "Destroy an authenticated token.",
                 "description": "Logging out the user.",
                 "operationId": "logout",
                 "parameters": [
@@ -164,81 +244,6 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
-                    }
-                }
-            }
-        },
-        "/register": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Register a new user",
-                "description": "Returns new user data",
-                "operationId": "registerUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password",
-                                    "tempo"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "email",
-                                        "example": "xuser@stuba.sk"
-                                    },
-                                    "password": {
-                                        "type": "password",
-                                        "example": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "201": {
-                        "description": "Invalid request body.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user_id": {
-                                            "type": "integer",
-                                            "example": "1"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Invalid request body.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Sorry, invalid request body."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 }
             }
