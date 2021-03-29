@@ -165,11 +165,11 @@ class MatchController extends Controller
         $lastRoundMatches = Match::all();
 
         $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
-            return $match->result == null;
+            return is_null($match->result);
         }, false);
 
         if ($foundMatchInProgress != null) {
-            return response()->json([], 403);
+            return response()->json(["Mathces are still in progress"], 403);
         }
 
         $lastRound = $lastRoundMatches->sortByDesc('round')->first()->round;
