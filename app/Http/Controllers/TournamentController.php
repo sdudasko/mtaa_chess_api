@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TournamentController extends Controller
@@ -56,6 +57,9 @@ class TournamentController extends Controller
      *     )
      *  )
      * )
+     * @param StoreTournamentRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
 
     public function store(StoreTournamentRequest $request)
@@ -152,6 +156,8 @@ class TournamentController extends Controller
      *        )
      *     )
      * )
+     * @param UpdateTournamentRequest $request
+     * @param Tournament $tournament
      */
     public function update(UpdateTournamentRequest $request, Tournament $tournament)
     {

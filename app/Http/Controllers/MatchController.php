@@ -163,13 +163,11 @@ class MatchController extends Controller
         $players = User::where("role_id", null)->get();
 
         $lastRoundMatches = Match::all();
-
         $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
             return is_null($match->result);
         }, false);
-
         if ($foundMatchInProgress != null) {
-            return response()->json(["Mathces are still in progress"], 403);
+            return response()->json(["Matches are still in progress"], 403);
         }
 
         $lastRound = $lastRoundMatches->sortByDesc('round')->first()->round;

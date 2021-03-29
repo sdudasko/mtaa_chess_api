@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'namespace' => 'App\Http\Controllers',
 ], function () {
+    // Create for all CRUD
     Route::apiResource('tournaments', 'TournamentController');
 
     Route::put('/matches', 'MatchController@store')->middleware('auth:api');
@@ -30,16 +31,19 @@ Route::group([
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
 
     Route::get('/players', 'UserController@index');
+    Route::put('/players/{player}', 'UserController@update');
     Route::put('/players', 'UserController@store');
     Route::get('/players/{player}', 'UserController@show');
+
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
-    Route::put('/players/{player}', 'UserController@update');
     Route::post('/players/import/storeBulk', 'UserController@storeBulk');
+
+    // Tournament routes...
 });
 
 Route::post('/register/passport', 'App\Http\Controllers\Api\AuthController@register');
 Route::post('/login/passport', 'App\Http\Controllers\Api\AuthController@login');
-Route::post('/logout/passport','App\Http\Controllers\Api\AuthController@logoutApi')->middleware('auth:api');
+Route::post('/logout/passport', 'App\Http\Controllers\Api\AuthController@logoutApi')->middleware('auth:api');
 
 
 Route::get('/login', 'App\Http\Controllers\Api\AuthController@loginShow')->name('loginShow');
