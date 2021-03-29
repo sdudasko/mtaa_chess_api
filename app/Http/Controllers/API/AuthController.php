@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -54,11 +55,17 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name'     => 'required|max:55',
             'email'    => 'email|required|unique:users',
             'password' => 'required|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $validatedData = $validator->validated();
 
         $validatedData['password'] = bcrypt($request->password);
 

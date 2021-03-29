@@ -897,7 +897,7 @@
             }
         },
         "/players/import/storeBulk": {
-            "put": {
+            "post": {
                 "tags": [
                     "Players"
                 ],
