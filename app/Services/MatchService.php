@@ -3,17 +3,15 @@
 namespace App\Services;
 
 use App\Models\Match;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 class MatchService
 {
-    public static function generateBySwissSystem(Collection $players, $round = 1, $updatePoints = false)
+    public static function generateBySwissSystem($players, $round, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
 
-        $players->sortBy(function ($player) {
-            return $player->points;
-        });
         $players->sortBy(function ($player) {
             return $player->points;
         });
