@@ -35,5 +35,6 @@ class Tournament extends Model
         'tempo_increment',
         'rounds',
         'description',
+        'qr_hash'
     ];
 }

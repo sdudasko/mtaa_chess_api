@@ -2,15 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e43aa6da-9973-47ea-b620-ea783a4003eb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/mtaa_chess_api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mtaa_chess_api.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MatchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MatchController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TournamentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TournamentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/StoreTournamentRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/StoreTournamentRequest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/Tournament.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Tournament.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_03_10_145014_create_tournaments_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_03_10_145014_create_tournaments_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -375,7 +369,7 @@
       <workItem from="1617026477282" duration="3141000" />
       <workItem from="1617122152412" duration="14223000" />
       <workItem from="1617138440215" duration="301000" />
-      <workItem from="1617185108218" duration="4531000" />
+      <workItem from="1617185108218" duration="9970000" />
     </task>
     <servers />
   </component>

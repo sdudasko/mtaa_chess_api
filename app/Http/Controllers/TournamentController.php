@@ -67,6 +67,7 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
             'date'            => 'nullable|date',
@@ -76,18 +77,27 @@ class TournamentController extends Controller
             'description'     => 'nullable|string',
         ]);
 
-        $sanitized = $validator->validated();
-        $sanitized["user_id"] = Auth::id();
-        $sanitized["qr_hash"] = $qr_hash=Str::random(20);
-        $tournament = Tournament::Create($sanitized);
-
-
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json($validator->errors(),422);
+        }
+
+        $user_id=Auth::id();
+        $count = Tournament::where('user_id', $user_id)->count();
+
+        if ($count==0) {
+            $sanitized = $validator->validated();
+            $sanitized["user_id"] = Auth::id();
+            $sanitized["qr_hash"] = $qr_hash = Str::random(20);
+            $tournament = Tournament::Create($sanitized);
+            return response()->json($tournament, 201);
+        }
+        else
+        {
+            return response()->json("Can't create tournament for user:$user_id",422);
         }
 
 
-       return response()->json($tournament, 201);
+
     }
 
     /**
@@ -121,9 +131,11 @@ class TournamentController extends Controller
      *      )
      * )
      */
-    public function show(Tournament $tournament)
+    public function show(Request $request)
     {
-        //
+        $hash = $request->input('hash');
+        $tournament = Tournament::where('qr_hash', $hash)->get();
+        return response()->json($tournament, 201);
     }
 
     /**
