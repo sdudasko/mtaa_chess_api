@@ -159,9 +159,10 @@ class MatchController extends Controller
      * )
      */
     public function store()
-    {
-        $players = User::where("role_id", null)->get();
+        {
 
+
+        $players = User::where("role_id", null)->get();
         $lastRoundMatches = Match::all();
         $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
             return is_null($match->result);

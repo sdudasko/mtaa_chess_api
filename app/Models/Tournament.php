@@ -27,4 +27,13 @@ use Illuminate\Database\Eloquent\Model;
 class Tournament extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title',
+        'user_id',
+        'datetime',
+        'tempo_minutes',
+        'tempo_increment',
+        'rounds',
+        'description',
+    ];
 }

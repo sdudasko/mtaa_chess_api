@@ -6,9 +6,12 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 class TournamentController extends Controller
 {
     /**
@@ -62,17 +65,29 @@ class TournamentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function store(StoreTournamentRequest $request)
+    public function store(Request $request)
     {
-        $sanitized = $request->validated();
-
-        $tournament = Tournament::create($sanitized);
-
-        $tournament->update([
-            'qr_hash' => Str::random(40)
+        $validator = Validator::make($request->all(), [
+            'title'           => 'required|string',
+            'date'            => 'nullable|date',
+            'tempo_minutes'   => 'required|integer',
+            'tempo_increment' => 'nullable|integer',
+            'rounds'          => 'required|integer',
+            'description'     => 'nullable|string',
         ]);
 
-        return response()->json($tournament, 201);
+        $sanitized = $validator->validated();
+        $sanitized["user_id"] = Auth::id();
+        $sanitized["qr_hash"] = $qr_hash=Str::random(20);
+        $tournament = Tournament::Create($sanitized);
+
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+
+       return response()->json($tournament, 201);
     }
 
     /**
@@ -238,3 +253,4 @@ class TournamentController extends Controller
     }
 
 }
+

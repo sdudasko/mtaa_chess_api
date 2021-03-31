@@ -39,6 +39,7 @@ Route::group([
     Route::post('/players/import/storeBulk', 'UserController@storeBulk');
 
     // Tournament routes...
+    Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');;
 });
 
 Route::post('/register/passport', 'App\Http\Controllers\Api\AuthController@register');

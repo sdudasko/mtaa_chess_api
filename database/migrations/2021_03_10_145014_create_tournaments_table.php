@@ -23,7 +23,7 @@ class CreateTournamentsTable extends Migration
             $table->text('description')->nullable();
             $table->dateTime('datetime')->nullable();
             $table->integer('rounds');
-            $table->binary('image');
+            $table->string('file_path')->nullable();
             $table->string("qr_hash")->nullable();
             $table->timestamps();
         });
