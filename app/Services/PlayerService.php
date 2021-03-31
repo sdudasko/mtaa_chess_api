@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Match;
+use App\Models\Player;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -32,15 +33,5 @@ class PlayerService
                     ]);
                 }
             });
-
-        $sumPoints = User::all()->sum(function($user) {
-            return $user->points;
-        });
     }
-
-    public function import($request)
-    {
-
-    }
-
 }

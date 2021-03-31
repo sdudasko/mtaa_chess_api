@@ -15,6 +15,17 @@ class Player extends User
 {
     protected $table = 'users';
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'elo',
+        'title',
+        'category',
+        'points',
+    ];
+
     public function matchesCustom()
     {
         return Match::where('black', $this->id)->orWhere('white', $this->id)->get();
