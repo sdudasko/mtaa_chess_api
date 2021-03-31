@@ -67,7 +67,6 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
             'date'            => 'nullable|date',
@@ -95,8 +94,6 @@ class TournamentController extends Controller
         {
             return response()->json("Can't create tournament for user:$user_id",422);
         }
-
-
 
     }
 
@@ -194,11 +191,77 @@ class TournamentController extends Controller
      * @param UpdateTournamentRequest $request
      * @param Tournament $tournament
      */
-    public function update()
+    public function update(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title'           => 'nullable|string',
+            'datetime'            => 'nullable|date',
+            'tempo_minutes'   => 'nullable|integer',
+            'tempo_increment' => 'nullable|integer',
+            'rounds'          => 'nullable|integer',
+            'description'     => 'nullable|string',
+            'file_path'       => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(),422);
+        }
+
         $user_id=Auth::id();
         $tournament=Tournament::where('user_id', $user_id);
-        dd($tournament);
+
+        $title= $request->input('title');
+        $datetime=$request->input('datetime');
+        $tempo_minutes=$request->input('tempo_minutes');
+        $tempo_increment=$request->input('tempo_increment');
+        $rounds=$request->input('rounds');
+        $description=$request->input('description');
+        $file_path=$request->input('file_path');
+
+        if ($title!= null)
+        {
+            $tournament->update([
+                'title' => "$title",
+            ]);
+        }
+        if ($datetime!= null)
+        {
+            $tournament->update([
+                'datetime' => "$datetime",
+            ]);
+        }
+        if ($tempo_minutes!= null)
+        {
+            $tournament->update([
+                'tempo_minutes' => "$tempo_minutes",
+            ]);
+        }
+        if ($tempo_increment!= null)
+        {
+            $tournament->update([
+                'tempo_increment' => "$tempo_increment",
+            ]);
+        }
+        if ($rounds!= null)
+        {
+            $tournament->update([
+                'rounds' => "$rounds",
+            ]);
+        }
+        if ($description!= null)
+        {
+            $tournament->update([
+                'description' => "$description",
+            ]);
+        }
+        if ($file_path!= null)
+        {
+            $tournament->update([
+                'file_path' => "file_path",
+            ]);
+        }
+
+
     }
 
     /**
