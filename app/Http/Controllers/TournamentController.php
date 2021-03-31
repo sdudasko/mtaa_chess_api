@@ -67,7 +67,7 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
-
+        dd($request);
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
             'date'            => 'nullable|date',
@@ -134,8 +134,16 @@ class TournamentController extends Controller
     public function show(Request $request)
     {
         $hash = $request->input('hash');
-        $tournament = Tournament::where('qr_hash', $hash)->get();
-        return response()->json($tournament, 201);
+        if ($this->checkTournamentByHash($hash))
+        {
+            $tournament = Tournament::where('qr_hash', $hash)->get();
+            return response()->json($tournament, 201);
+        }
+        else
+        {
+            return response()->json("Bad Request", 400);
+        }
+
     }
 
     /**
@@ -186,9 +194,11 @@ class TournamentController extends Controller
      * @param UpdateTournamentRequest $request
      * @param Tournament $tournament
      */
-    public function update(UpdateTournamentRequest $request, Tournament $tournament)
+    public function update()
     {
-        //
+        $user_id=Auth::id();
+        $tournament=Tournament::where('user_id', $user_id);
+        dd($tournament);
     }
 
     /**
@@ -225,9 +235,13 @@ class TournamentController extends Controller
      *      )
      * )
      */
-    public function destroy(Tournament $tournament)
+    public function destroy(Request $request)
     {
-        //
+
+        $user_id=Auth::id();
+
+        Tournament::where('user_id', $user_id)->delete();
+        return response()->json("Successful operation", 204);
     }
 
     /**
@@ -261,7 +275,15 @@ class TournamentController extends Controller
      */
     public function checkTournamentByHash(string $hash)
     {
-        //
+        $count = Tournament::where('qr_hash', $hash)->count();
+        if ($count==1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }

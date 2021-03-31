@@ -39,8 +39,10 @@ Route::group([
     Route::post('/players/import/storeBulk', 'UserController@storeBulk');
 
     // Tournament routes...
-    Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');;
+    Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');
     Route::get('/tournaments', 'TournamentController@show');
+    Route::delete('/tournaments', 'TournamentController@destroy')->middleware('auth:api');
+    Route::post('/tournaments', 'TournamentController@update')->middleware('auth:api');;
 
 });
 
