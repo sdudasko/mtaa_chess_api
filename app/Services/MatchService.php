@@ -18,7 +18,6 @@ class MatchService
         });
 
         $j = 0;
-
         for ( $i = 0; $i < $numberOfPlayers; $i += 2 ) {
 
             if ($j % 2 == 1) {

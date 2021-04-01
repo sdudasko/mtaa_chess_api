@@ -179,7 +179,6 @@ class MatchController extends Controller
         if (!$tournament) {
             return response()->json('There is not tournament created for this user', 403);
         }
-
         $players = User::where("role_id", null)->where('tournament_id', $tournament->id)->get();
 
         $lastRoundMatches = $tournament->matches;
@@ -198,8 +197,8 @@ class MatchController extends Controller
         else
             $lastRound = 0;
 
-        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1, $tournament);
 
+        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1, $tournament);
         return response()->json($generatedMatches, 201);
     }
 
