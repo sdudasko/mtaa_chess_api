@@ -163,7 +163,7 @@ class MatchController extends Controller
     public function store()
     {
         $players = User::where("role_id", null)->get();
-        dd($players);
+
         $administrator = auth()->user();
 
         $tournament = $administrator->tournament;
