@@ -98,10 +98,11 @@ class MatchTest extends TestCase
         $tournament_id = Tournament::first()->id;
 
         $response = $this->put( "v1/matches/");
+        $response->assertStatus(201);
 
-        $response_better = $this->put( "v1/matches/");
-        dd(Match::where("result",null)->count());
-        dd($response_better->status());
+        $response = $this->put( "v1/matches/");
+        $response->assertStatus(403);
+
         $this->assertTrue(true);
     }
 }

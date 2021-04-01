@@ -35,6 +35,7 @@ class UserFactory extends Factory
             'category'          => collect(['D09', 'D014', 'D019', 'CH09', 'CH014', 'CH19',])->random(),
             'title'             => $elo < 2250 ? null : collect(['FM', 'IM', 'GM'])->random(),
             'points'            => 0,
+            'registration_id' => Str::random(8),
         ];
     }
 
