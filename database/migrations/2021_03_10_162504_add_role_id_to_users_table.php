@@ -22,6 +22,7 @@ class AddRoleIdToUsersTable extends Migration
             $table->float('points')->nullable();
             $table->integer('tournament_id')->nullable();
             $table->foreign('tournament_id')->references('id')->on('tournaments')->onDelete('cascade');
+            $table->string('registration_id')->nullable();
         });
     }
 

@@ -10,6 +10,7 @@ use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -333,6 +334,7 @@ class UserController extends Controller
         $newUser = User::create($sanitized);
         $newUser->update([
             'tournament_id' => $tournament->id,
+            'registration_id' => Str::random(8),
         ]);
 
         return $newUser;

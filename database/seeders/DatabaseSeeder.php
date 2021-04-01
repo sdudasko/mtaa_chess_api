@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,7 +18,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::factory(101)->create();
+        $users = User::factory(101)->create([
+            'registration_id' => Str::random(8),
+        ]);
         User::all()->sortByDesc('id')->first()->update([
             'role_id' => 1,
         ]);
