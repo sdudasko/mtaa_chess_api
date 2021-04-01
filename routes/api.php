@@ -38,7 +38,7 @@ Route::group([
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
     Route::post('/players/import/storeBulk', 'UserController@storeBulk')->middleware('auth:api');
 
-    Route::get('/players/standings/{?round}', 'UserController@standings');
+    Route::get('/players/standings/{tournament_id}/', 'UserController@standings');
 
     // Tournament routes...
     Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');

@@ -180,13 +180,13 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/standings",
+     *      path="/standings/{hash}/{?round}",
      *      operationId="getStandings",
      *      tags={"Standings"},
      *      summary="Get standings",
      *      @OA\Parameter(
-     *          name="group_by_category",
-     *          required=false,
+     *          name="hash",
+     *          required=true,
      *          in="query",
      *          @OA\Schema(
      *              type="bool"
@@ -248,10 +248,23 @@ class UserController extends Controller
      *      )
      *     )
      */
-    public function standings()
+    public function standings(Request $request,$tournament_id)
     {
+        $validator = Validator::make($request->all(), [
+            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
+        ]);
 
-        return new  UserResource(User::all());
+        $sanitized = $validator->validated();
+        $category= $request->input('category');
+
+        if($category!=null){
+            $standings=User::where('tournament_id', $tournament_id)->where('category',$sanitized['category'])->orderByRaw('points DESC')->get();
+        }
+        else if($category==null){
+            $standings=User::where('tournament_id', $tournament_id)->orderByRaw('points DESC')->get();
+        }
+
+        return response()->json($standings, 200);
     }
 
 
