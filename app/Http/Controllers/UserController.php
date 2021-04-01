@@ -392,7 +392,7 @@ class UserController extends Controller
      *      path="/players/{id}",
      *      operationId="updatePlayer",
      *      tags={"Players"},
-     *      summary="Overrides existing player values.",
+     *      summary="Updates existing player values.",
      *      description="Returns updated player data",
      *      @OA\Parameter(
      *          name="id",
