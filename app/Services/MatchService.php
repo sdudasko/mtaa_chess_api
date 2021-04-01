@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class MatchService
 {
-    public static function generateBySwissSystem($players, $round, $updatePoints = false)
+    public static function generateBySwissSystem($players, $round, $tournament, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
 
@@ -24,11 +24,13 @@ class MatchService
                 $match = Match::create([
                     'black' => $players->get($j)->id,
                     'white' => $players->get($numberOfPlayers / 2 + $j)->id,
+                    'tournament_id' => $tournament->id,
                 ]);
             } else {
                 $match = Match::create([
                     'white' => $players->get($j)->id,
                     'black' => $players->get($numberOfPlayers / 2 + $j)->id,
+                    'tournament_id' => $tournament->id,
                 ]);
             }
             $match->update([

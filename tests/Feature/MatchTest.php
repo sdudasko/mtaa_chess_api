@@ -21,7 +21,6 @@ class MatchTest extends TestCase
         $matchService = new MatchService();
         $players = User::factory(100)->create();
 
-
         for ($i = 1; $i < $rounds; $i++)
         {
             $matchService->generateBySwissSystem($players, $i, true);

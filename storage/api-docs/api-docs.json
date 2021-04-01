@@ -14,12 +14,12 @@
     },
     "servers": [
         {
-            "url": "http://mtaa_chess_api.test/v1",
+            "url": "http://127.0.0.1:8000/v1",
             "description": "Demo API Server"
         }
     ],
     "paths": {
-        "/register/passport": {
+        "/register": {
             "post": {
                 "tags": [
                     "Auth"
@@ -99,7 +99,7 @@
                 }
             }
         },
-        "/login/passport": {
+        "/login": {
             "post": {
                 "tags": [
                     "Auth"
@@ -126,19 +126,30 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "202": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "token": {
-                                            "type": "string",
-                                            "format": "string",
-                                            "example": "..."
-                                        }
-                                    },
                                     "type": "object"
+                                },
+                                "example": {
+                                    "user": {
+                                        "id": 1,
+                                        "name": "xuser",
+                                        "email": "xuser@stuba.sk",
+                                        "role_id": 1,
+                                        "elo": null,
+                                        "category": null,
+                                        "title": null,
+                                        "points": null,
+                                        "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+                                        "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
+                                    },
+                                    "access_token": "...",
+                                    "tournament_hash": "..."
                                 }
                             }
                         }
@@ -149,7 +160,7 @@
                 }
             }
         },
-        "/logout/passport": {
+        "/logout": {
             "post": {
                 "tags": [
                     "Auth"
@@ -428,7 +439,7 @@
                                         "type": "integer",
                                         "example": "3"
                                     },
-                                    "tempo_increment": {
+                                    "tempo_minutes": {
                                         "type": "integer",
                                         "example": "2"
                                     },
@@ -489,44 +500,60 @@
                 }
             }
         },
-        "/tournaments/{id}": {
+        "/tournaments/{hash}": {
             "get": {
                 "tags": [
                     "Tournaments"
                 ],
                 "summary": "Get tournament information",
                 "description": "Returns tournament data",
-                "operationId": "getTournamentById",
+                "operationId": "getTournamentByHash",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "hash",
                         "in": "path",
-                        "description": "Tournament id",
+                        "description": "Tournament hash",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "202": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Tournament"
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "tournament": {
+                                        "id": 1,
+                                        "title": "Tournament",
+                                        "user_id": 2,
+                                        "tempo_minutes": 3,
+                                        "tempo_increment": 5,
+                                        "description": null,
+                                        "datetime": null,
+                                        "rounds": 9,
+                                        "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+                                        "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
+                                    },
+                                    "file": "..."
                                 }
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     }
                 }
-            },
+            }
+        },
+        "/tournaments/{id}": {
             "put": {
                 "tags": [
                     "Tournaments"
@@ -561,7 +588,24 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Tournament"
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "tournament": {
+                                        "id": 1,
+                                        "title": "Tournament",
+                                        "user_id": 2,
+                                        "tempo_minutes": 3,
+                                        "tempo_increment": 5,
+                                        "description": null,
+                                        "datetime": null,
+                                        "rounds": 9,
+                                        "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+                                        "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+                                        "created_at": "2021-03-25T11:47:13.000000Z",
+                                        "updated_at": "2021-03-25T11:47:13.000000Z"
+                                    },
+                                    "file": "..."
                                 }
                             }
                         }
@@ -618,17 +662,14 @@
                     "401": {
                         "description": "Unauthenticated"
                     },
-                    "403": {
-                        "description": "Forbidden"
-                    },
                     "404": {
                         "description": "Resource Not Found"
                     }
                 }
             }
         },
-        "/tournaments/{hash}": {
-            "get": {
+        "/tournaments/checkTournamentByHash/{hash}": {
+            "post": {
                 "tags": [
                     "Tournaments"
                 ],

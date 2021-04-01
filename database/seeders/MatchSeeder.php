@@ -16,6 +16,12 @@ class MatchSeeder extends Seeder
      */
     public function run()
     {
+        $administrator = User::first();
+
+        $administrator->update([
+            'role_id' => 1,
+        ]);
+
         $players = User::where("role_id", null)->get();
 
         if (Match::all()->sortByDesc('round')->first())

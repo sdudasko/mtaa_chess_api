@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,7 @@ class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *      path="/register/passport",
+     *      path="/register",
      *      operationId="registerUser",
      *      tags={"Auth"},
      *      summary="Register a new user",
@@ -71,6 +72,10 @@ class AuthController extends Controller
 
         $user = User::create($validatedData);
 
+        $user->update([
+            'role_id' => 1
+        ]);
+
         $accessToken = $user->createToken('authToken')->accessToken;
 
         return response(['user' => $user, 'access_token' => $accessToken]);
@@ -85,7 +90,7 @@ class AuthController extends Controller
      */
     /**
      * @OA\Post(
-     *      path="/login/passport",
+     *      path="/login",
      *      operationId="login",
      *      tags={"Auth"},
      *      summary="Handle an incoming authentication request.",
@@ -107,10 +112,28 @@ class AuthController extends Controller
      *          )
      *      ),
      *      @OA\Response(
-     *          response=200,
+     *          response=202,
      *          description="Successful operation",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="token", type="string", format="string", example="..."),
+     *           @OA\JsonContent(
+     *              type="object",
+     *              example={
+     *                    "user": {
+     *                          "id": 1,
+     *                          "name": "xuser",
+     *                          "email": "xuser@stuba.sk",
+     *                          "role_id": 1,
+     *                          "elo": null,
+     *                          "category": null,
+     *                          "title": null,
+     *                          "points": null,
+     *                          "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+     *                          "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                      },
+     *                    "access_token": "...",
+     *                    "tournament_hash": "...",
+     *             }
      *          )
      *       ),
      *      @OA\Response(
@@ -127,12 +150,17 @@ class AuthController extends Controller
         ]);
 
         if (!auth()->attempt($loginData)) {
-            return response(['message' => 'Invalid Credentials']);
+            return response(['message' => 'Invalid Credentials'], 422);
         }
+        $tournament = Tournament::where('user_id', auth()->id())->first();
 
+        if ($tournament)
+            $tournament_hash = $tournament->qr_hash;
+        else
+            $tournament_hash = null;
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+        return response(['user' => auth()->user(), 'access_token' => $accessToken, 'tournament_hash' => $tournament_hash]);
 
     }
 
@@ -150,7 +178,7 @@ class AuthController extends Controller
      */
     /**
      * @OA\Post(
-     *      path="/logout/passport",
+     *      path="/logout",
      *      operationId="logout",
      *      tags={"Auth"},
      *      summary="Destroy an authenticated token.",

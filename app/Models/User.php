@@ -59,4 +59,9 @@ class User extends Authenticatable
     public function authAcessToken(){
         return $this->hasMany(OauthAccessToken::class);
     }
+
+    public function tournament()
+    {
+        return $this->hasOne(Tournament::class);
+    }
 }

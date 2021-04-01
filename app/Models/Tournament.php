@@ -35,6 +35,12 @@ class Tournament extends Model
         'tempo_increment',
         'rounds',
         'description',
-        'qr_hash'
+        'qr_hash',
+        'file_path',
     ];
+
+    public function matches()
+    {
+        return $this->hasMany(Match::class);
+    }
 }
