@@ -231,6 +231,7 @@ class UserController extends Controller
      */
     public function standings()
     {
+
         return new  UserResource(User::all());
     }
 
