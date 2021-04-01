@@ -176,17 +176,16 @@ class MatchController extends Controller
         $administrator = auth()->user();
 
         $tournament = $administrator->tournament;
+
         if (!$tournament) {
             return response()->json('There is not tournament created for this user', 403);
         }
 
         $players = User::where("role_id", null)->where('tournament_id', $tournament->id)->get();
 
-        $lastRoundMatches = $tournament->matches;
+        $lastRoundMatches = Match::where('tournament_id', $tournament->id)->get();
 
-        $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
-            return is_null($match->result);
-        }, false);
+        $foundMatchInProgress = $lastRoundMatches->where('result', null)->first();
 
 
         if ($foundMatchInProgress != null) {
