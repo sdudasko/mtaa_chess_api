@@ -21,6 +21,15 @@ class MatchController extends Controller
      *      summary="Get list of matches",
      *      description="Returns list of matches",
      *      @OA\Parameter(
+     *          name="hash",
+     *          description="Tournament hash",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
      *          name="round",
      *          description="Round number",
      *          required=false,
@@ -86,16 +95,22 @@ class MatchController extends Controller
      *      ),
      * )
      */
-    public function index(Request $request, Tournament $tournament)
+    public function index(Request $request)
     {
         $sanitized = Validator::make($request->all(), [
+            'hash' => 'required',
             'round' => 'nullable|integer',
         ])->validated();
 
+        $tournament = Tournament::where('qr_hash', $sanitized['hash'])->first();
+
+        dd($tournament);
+        dd($tournament->matches);
+
         if (isset($sanitized['round']) && $sanitized['round']) {
-            $matches = Match::where('round', $sanitized['round'])->get();
+            $matches = $tournament->matches()->where('round', $sanitized['round'])->get();
         } else {
-            $matches = Match::all();
+            $matches = $tournament->matches;
         }
 
         return response()->json($matches, 201);
@@ -161,17 +176,22 @@ class MatchController extends Controller
      */
     public function store()
     {
-        $players = User::where("role_id", null)->get();
-
         $administrator = auth()->user();
 
         $tournament = $administrator->tournament;
+        if (!$tournament) {
+            return response()->json('There is not tournament created for this user', 403);
+        }
+
+        $players = User::where("role_id", null)->where('tournament_id', $tournament->id)->get();
+        dd($tournament->id);
 
         $lastRoundMatches = $tournament->matches;
 
         $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
             return is_null($match->result);
         }, false);
+
 
         if ($foundMatchInProgress != null) {
             return response()->json(["Matches are still in progress"], 403);
