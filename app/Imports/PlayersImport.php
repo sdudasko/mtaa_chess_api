@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
@@ -35,6 +36,7 @@ class PlayersImport implements ToModel, WithStartRow
             'elo'    => $row[4],
             'category'    => $row[5],
             'tournament_id' => $this->tournament->id,
+            'registration_id' => Str::random(8),
         ]);
     }
 }

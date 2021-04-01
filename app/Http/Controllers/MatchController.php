@@ -115,7 +115,7 @@ class MatchController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/matches/{tournamentId}",
+     *      path="/matches",
      *      operationId="storeMatch",
      *      tags={"Matches"},
      *      summary="Create new round",
