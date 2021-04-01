@@ -263,6 +263,7 @@ class TournamentController extends Controller
 
 
         if ($request->has('file')) {
+
             $request->file->store('tournaments', 'public');
             $tournament->update([
                 'file_path' => $request->file->hashName(),

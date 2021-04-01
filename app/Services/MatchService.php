@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Match;
+use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -45,7 +46,7 @@ class MatchService
             app(PlayerService::class)->updatePoints($round);
         }
 
-        $matchesForRound = Match::where('round', $round)->get();
+        $matchesForRound = $tournament->matches()->where('round', $round)->get();
 
         return $matchesForRound;
     }

@@ -88,7 +88,6 @@ class MatchController extends Controller
      */
     public function index(Request $request, Tournament $tournament)
     {
-        dd($tournament->matches);
         $sanitized = Validator::make($request->all(), [
             'round' => 'nullable|integer',
         ])->validated();

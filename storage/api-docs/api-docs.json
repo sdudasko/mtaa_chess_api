@@ -189,7 +189,7 @@
                 }
             }
         },
-        "/matches": {
+        "/matches/{tournamentId}": {
             "get": {
                 "tags": [
                     "Matches"
@@ -326,7 +326,7 @@
                 }
             }
         },
-        "/matches/{id}": {
+        "/matches/{id}/{tournamentId}": {
             "post": {
                 "tags": [
                     "Matches"
