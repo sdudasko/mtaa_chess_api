@@ -35,6 +35,7 @@ class User extends Authenticatable
         'title',
         'category',
         'points',
+        'tournament_id',
     ];
 
     /**

@@ -104,9 +104,6 @@ class MatchController extends Controller
 
         $tournament = Tournament::where('qr_hash', $sanitized['hash'])->first();
 
-        dd($tournament);
-        dd($tournament->matches);
-
         if (isset($sanitized['round']) && $sanitized['round']) {
             $matches = $tournament->matches()->where('round', $sanitized['round'])->get();
         } else {
@@ -184,7 +181,6 @@ class MatchController extends Controller
         }
 
         $players = User::where("role_id", null)->where('tournament_id', $tournament->id)->get();
-        dd($tournament->id);
 
         $lastRoundMatches = $tournament->matches;
 

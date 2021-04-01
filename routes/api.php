@@ -30,13 +30,13 @@ Route::group([
     Route::post('/matches/{match}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
 
-    Route::get('/players', 'UserController@index');
+    Route::get('/players/tournament/{tournamentId}', 'UserController@index');
     Route::put('/players/{player}', 'UserController@update');
-    Route::put('/players', 'UserController@store');
+    Route::put('/players', 'UserController@store')->middleware('auth:api');
     Route::get('/players/{player}', 'UserController@show');
 
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
-    Route::post('/players/import/storeBulk', 'UserController@storeBulk');
+    Route::post('/players/import/storeBulk', 'UserController@storeBulk')->middleware('auth:api');
 
     Route::get('/players/standings/{?round}', 'UserController@standings');
 

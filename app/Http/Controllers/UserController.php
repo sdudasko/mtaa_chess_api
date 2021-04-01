@@ -17,11 +17,19 @@ class UserController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/players",
+     *      path="/players/tournament/{tournamentId}",
      *      operationId="getPlayersList",
      *      tags={"Players"},
      *      summary="Get list of players",
      *      description="Returns list of players",
+     *      @OA\Parameter(
+     *          name="tournamentId",
+     *          required=false,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=201,
      *          description="Successful operation",
@@ -86,9 +94,11 @@ class UserController extends Controller
      *     )
      */
 
-    public function index()
+    public function index($tournamentId)
     {
-        $users = User::where('role_id', null)->get();
+        $users = User::where('role_id', null)
+            ->where('tournament_id', $tournamentId)
+            ->get();
 
         return response()->json($users, 201);
     }
@@ -114,7 +124,6 @@ class UserController extends Controller
      *                      @OA\Property(property="last_name", type="string"),
      *                      @OA\Property(property="email", type="string"),
      *                      @OA\Property(property="phone", type="string"),
-     *                      @OA\Property(property="resume", type="string", format="binary"),
      *                  )
      *              )
      *          )
@@ -125,18 +134,28 @@ class UserController extends Controller
      *          description="Successful operation",
      *       ),
      *       @OA\Response(
-     *          response=500,
-     *          description="Something went wrong.",
+     *          response=422,
+     *          description="Invalid request.",
      *       ),
      *     )
      */
     public function storeBulk(Request $request)
     {
-        Excel::import(new PlayersImport(), $request->import_file);
+        $administrator = User::where('id', auth()->id())->first();
+
+        if (!$administrator->tournament) {
+            return response()->json('There is not tournament created for this user', 403);
+        }
+
+        try {
+            Excel::import(new PlayersImport($administrator->tournament), $request->import_file);
+        } catch (\Exception $exception) {
+            return response()->json($exception->getMessage(), 422);
+        }
 
         \Session::put('success', 'Your file is imported successfully in database.');
 
-        return response()->json([], 204);
+        return response()->json([], 200);
     }
 
     /**
@@ -277,6 +296,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $administrator = User::find(auth()->id());
+        $tournament = $administrator->tournament;
+
+        if (!$tournament) {
+            return response()->json('There is not tournament created for this user', 403);
+        }
 
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string',
@@ -293,6 +318,9 @@ class UserController extends Controller
         $sanitized = $validator->validated();
 
         $newUser = User::create($sanitized);
+        $newUser->update([
+            'tournament_id' => $tournament->id,
+        ]);
 
         return $newUser;
     }

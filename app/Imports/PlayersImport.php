@@ -8,6 +8,12 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 
 class PlayersImport implements ToModel, WithStartRow
 {
+    protected $tournament = null;
+
+    public function __construct($tournament)
+    {
+        $this->tournament = $tournament;
+    }
     /**
      * @return int
      */
@@ -28,6 +34,7 @@ class PlayersImport implements ToModel, WithStartRow
             'title'    => $row[3] == '-' ? null : $row[3],
             'elo'    => $row[4],
             'category'    => $row[5],
+            'tournament_id' => $this->tournament->id,
         ]);
     }
 }

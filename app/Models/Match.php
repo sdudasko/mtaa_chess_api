@@ -19,7 +19,7 @@ class Match extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['white', 'black', 'round', 'table', 'result'];
+    protected $fillable = ['white', 'black', 'round', 'table', 'result', 'tournament_id'];
 
     public function whitePlayer()
     {
