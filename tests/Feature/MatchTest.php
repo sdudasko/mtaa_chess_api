@@ -57,6 +57,25 @@ class MatchTest extends TestCase
 
     public function test_matches_are_generated_correctly_by_swiss_system()
     {
+        $whitePlayersIds = Match::all()->groupBy('white')->keys();
+        $carryNumber = Match::count();
+
+        $i = 1;
+        $ok = true;
+        $whitePlayersIds->each(function($whitePlayerId) use (&$i, &$ok, $carryNumber) {
+
+            if ($whitePlayerId != $i) {
+                $ok = false;
+            }
+            if ($i % 2 == 1) {
+                $i += $carryNumber + 1;
+            } else {
+                $i -= $carryNumber;
+                $i += 1;
+            }
+        });
+        $this->assertTrue($ok);
+
         Artisan::call('db:seed');
 
         $administrator = User::where('role_id', 1)->first();
@@ -64,31 +83,8 @@ class MatchTest extends TestCase
         $this->actingAs($administrator, 'api');
 
         $response = $this->put("v1/matches");
+
         $response->assertStatus(201);
-
-        $retrieved_matches = collect(json_decode($response->content()));
-
-//        dd($retrieved_matches);
-        $whitePlayersIds = Match::all()->groupBy('white')->keys();
-
-        $carryNumber = Match::count();
-        
-        // This is only valid for the first seed
-//        $i = 1;
-//        $ok = true;
-//        $whitePlayersIds->each(function($whitePlayerId) use (&$i, &$ok, $carryNumber) {
-//
-//            if ($whitePlayerId != $i) {
-//                $ok = false;
-//            }
-//            if ($i % 2 == 1) {
-//                $i += $carryNumber + 1;
-//            } else {
-//                $i -= $carryNumber;
-//                $i += 1;
-//            }
-//        });
-//        $this->assertTrue($ok);
 
     }
 
