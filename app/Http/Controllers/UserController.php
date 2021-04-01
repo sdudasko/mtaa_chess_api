@@ -229,19 +229,23 @@ class UserController extends Controller
      *      )
      *     )
      */
-    public function standings(Request $request)
+    public function standings(Request $request,$tournament_id)
     {
-        dd($request);
+        $validator = Validator::make($request->all(), [
+            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
+        ]);
 
+        $sanitized = $validator->validated();
+        $category= $request->input('category');
 
-        $round= $request->input('round');
-        if ($round!=null)
-        {
-
+        if($category!=null){
+            $standings=User::where('tournament_id', $tournament_id)->where('category',$sanitized['category'])->orderByRaw('points DESC')->get();
         }
-        $count = Tournament::where('user_id', $user_id)->count();
-        dd($request);
+        else if($category==null){
+            $standings=User::where('tournament_id', $tournament_id)->orderByRaw('points DESC')->get();
+        }
 
+        return response()->json($standings, 200);
     }
 
 
