@@ -8,6 +8,7 @@ use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class TournamentController extends Controller
      *              @OA\Property(property="title", type="string", format="string", example="Tournament name"),
      *              @OA\Property(property="date", type="datetime", format="YYYY-MM-DD HH:MM:SS", example="2021-05-06 09:00:00"),
      *              @OA\Property(property="tempo", type="integer", example="3"),
-     *              @OA\Property(property="tempo_increment", type="integer", example="2"),
+     *              @OA\Property(property="tempo_minutes", type="integer", example="2"),
      *              @OA\Property(property="rounds", type="integer", example="15"),
      *              @OA\Property(property="description", type="text", example="Description"),
      *              @OA\Property(property="image", type="bytearray", example=""),
@@ -99,47 +100,71 @@ class TournamentController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/tournaments/{id}",
-     *      operationId="getTournamentById",
+     *      path="/tournaments/{hash}",
+     *      operationId="getTournamentByHash",
      *      tags={"Tournaments"},
      *      summary="Get tournament information",
      *      description="Returns tournament data",
      *      @OA\Parameter(
-     *          name="id",
-     *          description="Tournament id",
+     *          name="hash",
+     *          description="Tournament hash",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
-     *              type="integer"
-     *          )
+     *              type="string"
+     *          ),
      *      ),
      *      @OA\Response(
-     *          response=201,
+     *          response=202,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Tournament")
+     *           @OA\JsonContent(
+     *              type="object",
+     *              example={
+     *                    "tournament": {
+     *                          "id": 1,
+     *                          "title": "Tournament",
+     *                          "user_id": 2,
+     *                          "tempo_minutes": 3,
+     *                          "tempo_increment": 5,
+     *                          "description": null,
+     *                          "datetime": null,
+     *                          "rounds": 9,
+     *                          "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+     *                          "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                      },
+     *                    "file": "..."
+     *             }
+     *          )
      *       ),
      *      @OA\Response(
      *          response=400,
      *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
      *      )
      * )
      */
-    public function show(Request $request)
+    public function show($hash)
     {
-        $hash = $request->input('hash');
-        if ($this->checkTournamentByHash($hash))
-        {
-            $tournament = Tournament::where('qr_hash', $hash)->get();
-            return response()->json($tournament, 201);
-        }
+        $tournament = Tournament::where('qr_hash', $hash)->first();
+
+        if (!$tournament)
+            return response('Tournament not found', 404);
+        $path = storage_path("app/public/tournaments/$tournament->file_path");
+
+        if ($tournament->file_path)
+            if (File::exists($path))
+                $encoded_file = base64_encode(file_get_contents($path));
+            else
+                $encoded_file = null;
         else
-        {
-            return response()->json("Bad Request", 400);
-        }
+            $encoded_file = null;
+
+        return response()->json([
+            'tournament' => $tournament,
+            'file' => $encoded_file
+
+        ], 201);
 
     }
 
@@ -166,7 +191,26 @@ class TournamentController extends Controller
      *      @OA\Response(
      *          response=202,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/Tournament")
+     *           @OA\JsonContent(
+     *              type="object",
+     *              example={
+     *                    "tournament": {
+     *                          "id": 1,
+     *                          "title": "Tournament",
+     *                          "user_id": 2,
+     *                          "tempo_minutes": 3,
+     *                          "tempo_increment": 5,
+     *                          "description": null,
+     *                          "datetime": null,
+     *                          "rounds": 9,
+     *                          "file_path": "JHZ0DJZUjkoNdJjqe8M8iL0Q3mjy6nxqbsVt5PQE.jpg",
+     *                          "qr_hash": "GMfVDb5vFDLGtupHGM2f",
+     *                          "created_at": "2021-03-25T11:47:13.000000Z",
+     *                          "updated_at": "2021-03-25T11:47:13.000000Z",
+     *                      },
+     *                    "file": "..."
+     *             }
+     *          )
      *       ),
      *      @OA\Response(
      *          response=400,
@@ -191,7 +235,7 @@ class TournamentController extends Controller
      * @param UpdateTournamentRequest $request
      * @param Tournament $tournament
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'title'           => 'nullable|string',
@@ -200,7 +244,7 @@ class TournamentController extends Controller
             'tempo_increment' => 'nullable|integer',
             'rounds'          => 'nullable|integer',
             'description'     => 'nullable|string',
-            'file_path'       => 'nullable|string'
+            'file'       => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -208,7 +252,7 @@ class TournamentController extends Controller
         }
 
         $user_id=Auth::id();
-        $tournament=Tournament::where('user_id', $user_id);
+        $tournament=Tournament::findOrFail($id);
 
         $title= $request->input('title');
         $datetime=$request->input('datetime');
@@ -216,7 +260,15 @@ class TournamentController extends Controller
         $tempo_increment=$request->input('tempo_increment');
         $rounds=$request->input('rounds');
         $description=$request->input('description');
-        $file_path=$request->input('file_path');
+
+
+        if ($request->has('file')) {
+
+            $request->file->store('tournaments', 'public');
+            $tournament->update([
+                'file_path' => $request->file->hashName(),
+            ]);
+        }
 
         if ($title!= null)
         {
@@ -254,13 +306,8 @@ class TournamentController extends Controller
                 'description' => "$description",
             ]);
         }
-        if ($file_path!= null)
-        {
-            $tournament->update([
-                'file_path' => "file_path",
-            ]);
-        }
 
+        return response()->json($tournament, 201);
 
     }
 
@@ -289,27 +336,28 @@ class TournamentController extends Controller
      *          description="Unauthenticated",
      *      ),
      *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      ),
-     *      @OA\Response(
      *          response=404,
      *          description="Resource Not Found"
      *      )
      * )
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-
         $user_id=Auth::id();
 
-        Tournament::where('user_id', $user_id)->delete();
+        $auth_id = auth()->id();
+
+        if ($auth_id == $user_id) {
+            $tournament = Tournament::findOrFail($id);
+            $tournament->delete();
+        }
+
         return response()->json("Successful operation", 204);
     }
 
     /**
-     * @OA\Get(
-     *      path="/tournaments/{hash}",
+     * @OA\Post(
+     *      path="/tournaments/checkTournamentByHash/{hash}",
      *      operationId="checkTournamentByHash",
      *      tags={"Tournaments"},
      *      summary="Check if the scanned hash is a valid tournament hash.",
@@ -341,11 +389,11 @@ class TournamentController extends Controller
         $count = Tournament::where('qr_hash', $hash)->count();
         if ($count==1)
         {
-            return true;
+            return response()->json(['valid' => true]);
         }
         else
         {
-            return false;
+            return response()->json(['valid' => false]);
         }
     }
 

@@ -3,17 +3,16 @@
 namespace App\Services;
 
 use App\Models\Match;
+use App\Models\Tournament;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 class MatchService
 {
-    public static function generateBySwissSystem(Collection $players, $round = 1, $updatePoints = false)
+    public static function generateBySwissSystem($players, $round, $tournament, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
 
-        $players->sortBy(function ($player) {
-            return $player->points;
-        });
         $players->sortBy(function ($player) {
             return $player->points;
         });
@@ -26,11 +25,13 @@ class MatchService
                 $match = Match::create([
                     'black' => $players->get($j)->id,
                     'white' => $players->get($numberOfPlayers / 2 + $j)->id,
+                    'tournament_id' => $tournament->id,
                 ]);
             } else {
                 $match = Match::create([
                     'white' => $players->get($j)->id,
                     'black' => $players->get($numberOfPlayers / 2 + $j)->id,
+                    'tournament_id' => $tournament->id,
                 ]);
             }
             $match->update([
@@ -45,7 +46,7 @@ class MatchService
             app(PlayerService::class)->updatePoints($round);
         }
 
-        $matchesForRound = Match::where('round', $round)->get();
+        $matchesForRound = $tournament->matches()->where('round', $round)->get();
 
         return $matchesForRound;
     }

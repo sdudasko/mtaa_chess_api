@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Match;
+use App\Models\Tournament;
 use App\Models\User;
 use App\Services\MatchService;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class MatchController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/matches",
+     *      path="/matches/{tournamentId}",
      *      operationId="getMatchesList",
      *      tags={"Matches"},
      *      summary="Get list of matches",
@@ -85,7 +86,7 @@ class MatchController extends Controller
      *      ),
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request, Tournament $tournament)
     {
         $sanitized = Validator::make($request->all(), [
             'round' => 'nullable|integer',
@@ -102,7 +103,7 @@ class MatchController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/matches",
+     *      path="/matches/{tournamentId}",
      *      operationId="storeMatch",
      *      tags={"Matches"},
      *      summary="Create new round",
@@ -159,28 +160,36 @@ class MatchController extends Controller
      * )
      */
     public function store()
-        {
-
-
+    {
         $players = User::where("role_id", null)->get();
-        $lastRoundMatches = Match::all();
+
+        $administrator = auth()->user();
+
+        $tournament = $administrator->tournament;
+
+        $lastRoundMatches = $tournament->matches;
+
         $foundMatchInProgress = $lastRoundMatches->first(function ($match) {
             return is_null($match->result);
         }, false);
+
         if ($foundMatchInProgress != null) {
             return response()->json(["Matches are still in progress"], 403);
         }
 
-        $lastRound = $lastRoundMatches->sortByDesc('round')->first()->round;
+        if ($lastRoundMatches->count() != 0)
+            $lastRound = $lastRoundMatches->sortByDesc('round')->first()->round;
+        else
+            $lastRound = 0;
 
-        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1);
+        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1, $tournament);
 
         return response()->json($generatedMatches, 201);
     }
 
     /**
      * @OA\Post(
-     *      path="/matches/{id}",
+     *      path="/matches/{id}/{tournamentId}",
      *      operationId="updateMatch",
      *      tags={"Matches"},
      *      summary="Update existing match",

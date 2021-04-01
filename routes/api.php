@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 |
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| is assigned the "api" middleware group. Enjoy building your API!pass
 |
 */
 
@@ -23,11 +23,11 @@ Route::group([
     'namespace' => 'App\Http\Controllers',
 ], function () {
     // Create for all CRUD
-    Route::apiResource('tournaments', 'TournamentController');
+//    Route::apiResource('tournaments', 'TournamentController');
 
-    Route::put('/matches', 'MatchController@store')->middleware('auth:api');
-    Route::get('/matches', 'MatchController@index');
-    Route::post('/matches/{match}', 'MatchController@update');
+    Route::get('/matches/{tournament}', 'MatchController@index');
+    Route::put('/matches/{tournament}', 'MatchController@store')->middleware('auth:api');
+    Route::post('/matches/{match}/{tournament}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
 
     Route::get('/players', 'UserController@index');
@@ -42,15 +42,16 @@ Route::group([
 
     // Tournament routes...
     Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');
-    Route::get('/tournaments', 'TournamentController@show');
-    Route::delete('/tournaments', 'TournamentController@destroy')->middleware('auth:api');
-    Route::post('/tournaments', 'TournamentController@update')->middleware('auth:api');;
+    Route::delete('/tournaments/{id}', 'TournamentController@destroy')->middleware('auth:api');
+    Route::post('/tournaments/{id}', 'TournamentController@update')->middleware('auth:api');;
+    Route::get('/tournaments/{hash}', 'TournamentController@show');
+    Route::post('/tournaments/checkTournamentByHash/{hash}', 'TournamentController@checkTournamentByHash');
 
 });
 
-Route::post('/register/passport', 'App\Http\Controllers\Api\AuthController@register');
-Route::post('/login/passport', 'App\Http\Controllers\Api\AuthController@login');
-Route::post('/logout/passport', 'App\Http\Controllers\Api\AuthController@logoutApi')->middleware('auth:api');
+Route::post('/register', 'App\Http\Controllers\Api\AuthController@register');
+Route::post('/login', 'App\Http\Controllers\Api\AuthController@login');
+Route::post('/logout', 'App\Http\Controllers\Api\AuthController@logoutApi')->middleware('auth:api');
 
 
 Route::get('/login', 'App\Http\Controllers\Api\AuthController@loginShow')->name('loginShow');

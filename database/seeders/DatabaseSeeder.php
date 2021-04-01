@@ -16,7 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         User::factory(100)->create();
+         User::factory(101)->create();
+         User::all()->sortByDesc('id')->first()->update([
+             'role_id' => 1,
+         ]);
+
+        Artisan::call('db:seed --class="TournamentSeeder"');
         Artisan::call('db:seed --class="MatchSeeder"');
     }
 }
