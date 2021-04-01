@@ -251,6 +251,7 @@ class UserController extends Controller
      */
     public function standings(Request $request,$tournament_id)
     {
+
         $validator = Validator::make($request->all(), [
             'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
         ]);
@@ -265,7 +266,7 @@ class UserController extends Controller
             $standings=User::where('tournament_id', $tournament_id)->orderByRaw('points DESC')->get();
         }
 
-        return response()->json($standings, 200);
+        return response()->json($standings, 201);
     }
 
 

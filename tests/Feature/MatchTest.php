@@ -16,7 +16,7 @@ class MatchTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_matches_are_generated_correctly_by_swiss_system()
+    public function test_completed_matches_points_in_total_have_right_points()
     {
         Artisan::call('db:seed');
 
@@ -31,16 +31,65 @@ class MatchTest extends TestCase
             $matchService->generateBySwissSystem($players, $i, Tournament::first(), true);
         }
 
-
         $sumPoints = User::where('role_id', null)->get()->sum(function($user) {
             return $user->points;
         });
 
         $total = ($rounds) * $players->count()/2;
 
-
         $this->assertEquals($sumPoints, $total);
-        $this->assertTrue(true);
+
+        $tournamentId = Tournament::first()->id;
+
+        $response = $this->call('get', "v1/players/standings/$tournamentId");
+
+        $data = collect(json_decode($response->content()));
+
+        $shouldBeTotal = $data->count() - 1; // -1 for admin
+        $sumAfterEndOfTournament = $data->pluck('points')->sum(function($point) {
+            return $point;
+        });
+
+        $this->assertEquals($shouldBeTotal, $sumAfterEndOfTournament);
+
+        $response->assertStatus(201);
+    }
+
+    public function test_matches_are_generated_correctly_by_swiss_system()
+    {
+        Artisan::call('db:seed');
+
+        $administrator = User::where('role_id', 1)->first();
+
+        $this->actingAs($administrator, 'api');
+
+        $response = $this->put("v1/matches");
+        $response->assertStatus(201);
+
+        $retrieved_matches = collect(json_decode($response->content()));
+
+//        dd($retrieved_matches);
+        $whitePlayersIds = Match::all()->groupBy('white')->keys();
+
+        $carryNumber = Match::count();
+        
+        // This is only valid for the first seed
+//        $i = 1;
+//        $ok = true;
+//        $whitePlayersIds->each(function($whitePlayerId) use (&$i, &$ok, $carryNumber) {
+//
+//            if ($whitePlayerId != $i) {
+//                $ok = false;
+//            }
+//            if ($i % 2 == 1) {
+//                $i += $carryNumber + 1;
+//            } else {
+//                $i -= $carryNumber;
+//                $i += 1;
+//            }
+//        });
+//        $this->assertTrue($ok);
+
     }
 
     public function organizer_cannot_start_new_round_if_all_games_are_not_completed()
