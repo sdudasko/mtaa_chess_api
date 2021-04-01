@@ -161,13 +161,13 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/standings",
+     *      path="/standings/{hash}/{?round}",
      *      operationId="getStandings",
      *      tags={"Standings"},
      *      summary="Get standings",
      *      @OA\Parameter(
-     *          name="group_by_category",
-     *          required=false,
+     *          name="hash",
+     *          required=true,
      *          in="query",
      *          @OA\Schema(
      *              type="bool"
@@ -229,10 +229,19 @@ class UserController extends Controller
      *      )
      *     )
      */
-    public function standings()
+    public function standings(Request $request)
     {
+        dd($request);
 
-        return new  UserResource(User::all());
+
+        $round= $request->input('round');
+        if ($round!=null)
+        {
+
+        }
+        $count = Tournament::where('user_id', $user_id)->count();
+        dd($request);
+
     }
 
 
