@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
+
 class MatchTest extends TestCase
 {
     use RefreshDatabase;
@@ -88,8 +89,19 @@ class MatchTest extends TestCase
 
     }
 
-    public function organizer_cannot_start_new_round_if_all_games_are_not_completed()
+    public function test_organizer_cannot_start_new_round_if_all_games_are_not_completed()
     {
+        Artisan::call('db:seed');
+
+        $administrator = User::where('role_id', 1)->first();
+        $this->actingAs($administrator, 'api');
+        $tournament_id = Tournament::first()->id;
+
+        $response = $this->put( "v1/matches/");
+
+        $response_better = $this->put( "v1/matches/");
+        dd(Match::where("result",null)->count());
+        dd($response_better->status());
         $this->assertTrue(true);
     }
 }
