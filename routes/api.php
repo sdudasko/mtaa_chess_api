@@ -35,6 +35,8 @@ Route::group([
     Route::put('/players', 'UserController@store')->middleware('auth:api');
     Route::get('/players/{player}', 'UserController@show');
 
+    Route::post('/players/checkPlayerId', 'UserController@checkPlayerId');
+
     Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
     Route::post('/players/import/storeBulk', 'UserController@storeBulk')->middleware('auth:api');
 

@@ -461,14 +461,14 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/users/checkPlayerId",
+     *      path="/players/checkPlayerId",
      *      operationId="checkPlayerId",
      *      tags={"Players"},
      *      summary="Check if the typed id is a valid player id.",
      *      description="Returns true if the player can attend the tournament.",
      *      @OA\Parameter(
-     *          name="id",
-     *          description="Player id",
+     *          name="registration_id",
+     *          description="Given id",
      *          required=true,
      *          in="query",
      *          @OA\Schema(
@@ -485,7 +485,7 @@ class UserController extends Controller
      *          )
      *      ),
      *      @OA\Response(
-     *          response=201,
+     *          response=200,
      *          description="Returns true if the player can attend the tournament.",
      *          @OA\JsonContent(
      *              @OA\Property(property="valid", type="bool", example="true")
@@ -497,9 +497,20 @@ class UserController extends Controller
      *      ),
      * )
      */
-    public function checkPlayerId(string $hash)
+    public function checkPlayerId(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'hash'     => 'required|string|exists:tournaments,qr_hash',
+            'registration_id'     => 'required|string|exists:users,registration_id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 403);
+        }
+
+        $sanitized = $validator->validated();
+
+        return response()->json('', 200);
     }
 
     /**
