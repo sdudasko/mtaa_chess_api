@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
+
 class MatchTest extends TestCase
 {
     use RefreshDatabase;
@@ -88,8 +89,8 @@ class MatchTest extends TestCase
 
     }
 
-    public function organizer_cannot_start_new_round_if_all_games_are_not_completed()
+    public function test_organizer_cannot_start_new_round_if_all_games_are_not_completed()
     {
-        $this->assertTrue(true);
+     
     }
 }
