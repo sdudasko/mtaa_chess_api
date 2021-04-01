@@ -12,7 +12,6 @@ class MatchService
     public static function generateBySwissSystem($players, $round, $tournament, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
-
         $players->sortBy(function ($player) {
             return $player->points;
         });

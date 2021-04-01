@@ -97,13 +97,16 @@ class MatchController extends Controller
      */
     public function index(Request $request)
     {
-        $sanitized = Validator::make($request->all(), [
-            'hash' => 'required',
+        $validator= validator::make($request->all(), [
+            'hash' => 'required|string',
             'round' => 'nullable|integer',
-        ])->validated();
+        ]);
+        $sanitized=$validator->validated();
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $tournament = Tournament::where('qr_hash', $sanitized['hash'])->first();
-
         if (isset($sanitized['round']) && $sanitized['round']) {
             $matches = $tournament->matches()->where('round', $sanitized['round'])->get();
         } else {
