@@ -237,7 +237,7 @@ class TournamentController extends Controller
      * @param UpdateTournamentRequest $request
      * @param Tournament $tournament
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $hash)
     {
         $validator = Validator::make($request->all(), [
             'title'           => 'nullable|string',
@@ -254,7 +254,9 @@ class TournamentController extends Controller
         }
 
         $user_id=Auth::id();
-        $tournament=Tournament::findOrFail($id);
+        $tournament=Tournament::where('qr_hash', $hash)->first();
+        if (!$tournament)
+            return response()->json("Tournament with hash $hash was not found.",404);
 
         $title= $request->input('title');
         $datetime=$request->input('datetime');
