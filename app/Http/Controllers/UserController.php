@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Player;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -99,9 +100,10 @@ class UserController extends Controller
     {
         $users = User::where('role_id', null)
             ->where('tournament_id', $tournamentId)
+            ->orderBy('id')
             ->get();
 
-        return response()->json($users, 201);
+        return response()->json(['data' => $users], 201);
     }
 
     /**
@@ -574,5 +576,13 @@ class UserController extends Controller
         $matches = $player->matchesCustom();
 
         return response()->json($matches, 201);
+    }
+
+    public function abc(Request $request)
+    {
+        Log::info("Here");
+        Log::info(collect($request->all())->toJson());
+        dd('ah');
+
     }
 }

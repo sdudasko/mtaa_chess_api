@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -56,6 +57,9 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        Log::info("Here. Register PAge.");
+        Log::info(collect($request->all())->toJson());
+
         $validator = Validator::make($request->all(), [
             'name'     => 'required|max:55',
             'email'    => 'email|required|unique:users',
@@ -63,7 +67,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json(['data' => $validator->errors()], 422);
         }
 
         $validatedData = $validator->validated();
@@ -78,7 +82,7 @@ class AuthController extends Controller
 
         $accessToken = $user->createToken('authToken')->accessToken;
 
-        return response(['user' => $user, 'access_token' => $accessToken]);
+        return response(['user' => $user, 'access_token' => $accessToken], 201);
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Models\Tournament;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -68,6 +69,7 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
+        Log::info(collect($request->all())->toJson());
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
             'date'            => 'nullable|date',
@@ -161,7 +163,7 @@ class TournamentController extends Controller
             $encoded_file = null;
 
         return response()->json([
-            'tournament' => $tournament,
+            'data' => $tournament,
             'file' => $encoded_file
 
         ], 201);

@@ -32,13 +32,13 @@ class TournamentTest extends TestCase
         $response = $this->call('put', "v1/tournaments", $param);
         $response->assertStatus(422);
 
-        $param['rounds']=13;
+        $param['rounds'] = 13;
         $response = $this->call('put', "v1/tournaments", $param);
         $response->assertStatus(201);
 
-        $this->assertDatabaseHas('tournaments',[
-            'title'=>$param['title'],
-            'tempo_minutes'=>$param['tempo_minutes']
+        $this->assertDatabaseHas('tournaments', [
+            'title'         => $param['title'],
+            'tempo_minutes' => $param['tempo_minutes'],
         ]);
 
         $this->assertTrue(true);

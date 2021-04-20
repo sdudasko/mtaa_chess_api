@@ -33,6 +33,7 @@ Route::group([
     Route::get('/players/tournament/{tournamentId}', 'UserController@index');
     Route::put('/players/{player}', 'UserController@update');
     Route::put('/players', 'UserController@store')->middleware('auth:api');
+    Route::post('/players', 'UserController@abc');
     Route::get('/players/{player}', 'UserController@show');
 
     Route::post('/players/checkPlayerId', 'UserController@checkPlayerId');
