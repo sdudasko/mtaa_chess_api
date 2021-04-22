@@ -57,7 +57,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        Log::info("Here. Register PAge.");
+        Log::info("Here. Register Page.");
         Log::info(collect($request->all())->toJson());
 
         $validator = Validator::make($request->all(), [
@@ -148,6 +148,8 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        Log::info("Here. Login Page.");
+        Log::info(collect($request->all())->toJson());
         $loginData = $request->validate([
             'email'    => 'email|required',
             'password' => 'required',

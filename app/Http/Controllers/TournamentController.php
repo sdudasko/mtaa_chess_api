@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -69,6 +70,7 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
+        Log::info("STORE");
         Log::info(collect($request->all())->toJson());
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
@@ -91,6 +93,7 @@ class TournamentController extends Controller
             $sanitized["user_id"] = Auth::id();
             $sanitized["qr_hash"] = $qr_hash = Str::random(20);
             $tournament = Tournament::Create($sanitized);
+            $tournament->tournament_hash = $tournament->qr_hash;
             return response()->json($tournament, 201);
         }
         else
@@ -148,6 +151,8 @@ class TournamentController extends Controller
      */
     public function show($hash)
     {
+        Log::info("SHOW");
+        Log::info($hash);
         $tournament = Tournament::where('qr_hash', $hash)->first();
 
         if (!$tournament)
@@ -162,9 +167,12 @@ class TournamentController extends Controller
         else
             $encoded_file = null;
 
+        $tournament->organiser = User::find($tournament->user_id)->name;
+
         return response()->json([
             'data' => $tournament,
-            'file' => $encoded_file
+            'file' => $encoded_file,
+            'tournament_hash' => $hash,
 
         ], 201);
 
@@ -239,6 +247,8 @@ class TournamentController extends Controller
      */
     public function update(Request $request, $hash)
     {
+        Log::info("UPDATE");
+        Log::info($hash);
         $validator = Validator::make($request->all(), [
             'title'           => 'nullable|string',
             'datetime'            => 'nullable|date',
@@ -311,7 +321,9 @@ class TournamentController extends Controller
             ]);
         }
 
-        return response()->json($tournament, 201);
+        $tournament->tournament_hash = $hash;
+
+        return response()->json(['data' => $tournament], 201);
 
     }
 
@@ -347,6 +359,9 @@ class TournamentController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        Log::info("DELETE");
+        Log::info($id);
+//        return response()->json(['data' => $id], 204); // TODO - Remove to enable detete
         $user_id=Auth::id();
 
         $auth_id = auth()->id();
