@@ -357,17 +357,16 @@ class TournamentController extends Controller
      *      )
      * )
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request)
     {
         Log::info("DELETE");
-        Log::info($id);
 //        return response()->json(['data' => $id], 204); // TODO - Remove to enable detete
         $user_id=Auth::id();
 
         $auth_id = auth()->id();
 
         if ($auth_id == $user_id) {
-            $tournament = Tournament::findOrFail($id);
+            $tournament = Tournament::where('user_id', $auth_id)->first();
             $tournament->delete();
         }
 

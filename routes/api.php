@@ -46,7 +46,7 @@ Route::group([
     // Tournament routes...
     Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');
     Route::delete('/tournaments/{id}', 'TournamentController@destroy')->middleware('auth:api');
-    Route::post('/tournaments/{id}', 'TournamentController@update')->middleware('auth:api');;
+    Route::post('/tournaments/{id}', 'TournamentController@update')->middleware('auth:api');
     Route::get('/tournaments/{hash}', 'TournamentController@show');
     Route::post('/tournaments/checkTournamentByHash/{hash}', 'TournamentController@checkTournamentByHash');
 
