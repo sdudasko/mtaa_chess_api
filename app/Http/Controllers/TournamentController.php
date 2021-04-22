@@ -94,7 +94,7 @@ class TournamentController extends Controller
             $sanitized["qr_hash"] = $qr_hash = Str::random(20);
             $tournament = Tournament::Create($sanitized);
             $tournament->tournament_hash = $tournament->qr_hash;
-            return response()->json($tournament, 201);
+            return response()->json(['data' => $tournament], 201);
         }
         else
         {
