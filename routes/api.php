@@ -25,7 +25,7 @@ Route::group([
     // Create for all CRUD
 //    Route::apiResource('tournaments', 'TournamentController');
 
-    Route::get('/matches', 'MatchController@index');
+    Route::get('/matches/{hash}', 'MatchController@index');
     Route::put('/matches', 'MatchController@store')->middleware('auth:api');
     Route::post('/matches/{match}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
