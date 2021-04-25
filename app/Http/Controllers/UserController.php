@@ -512,7 +512,7 @@ class UserController extends Controller
 
         $sanitized = $validator->validated();
 
-        return response()->json('', 200);
+        return response()->json(['message' => "User exists"], 200);
     }
 
     /**
