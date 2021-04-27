@@ -166,7 +166,7 @@ class AuthController extends Controller
             $tournament_hash = null;
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        return response(['user' => auth()->user(), 'access_token' => $accessToken, 'tournament_hash' => $tournament_hash]);
+        return response(['user' => auth()->user(), 'access_token' => $accessToken, 'tournament_hash' => $tournament_hash],201);
 
     }
 
@@ -214,7 +214,6 @@ class AuthController extends Controller
             Auth::user()->authAcessToken()->delete();
             return response()->json([], 200);
         }
-
         return response()->json("Unauthenticated", 401);
     }
 }
