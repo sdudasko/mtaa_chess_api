@@ -7,7 +7,9 @@ use App\Imports\PlayersImport;
 use App\Imports\TransactionsImport;
 use App\Models\Category;
 use App\Models\Player;
+use App\Models\Tournament;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -323,8 +325,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string',
             'elo'      => 'required|integer',
-            'category' => ['required', 'string', Rule::in(Category::getCategories())],
-            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+//            'category' => ['required', 'string', Rule::in(Category::getCategories())],
+//            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+            'category' => ['required', 'string'],
+            'title'    => ['nullable', 'string'],
             'email'    => 'email|unique:users,email',
         ]);
 
@@ -389,7 +393,7 @@ class UserController extends Controller
      */
     public function show(Player $player)
     {
-        return response()->json($player, 201);
+        return response()->json(['data' => $player], 201);
     }
 
     /**
@@ -446,8 +450,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'     => 'nullable|string',
             'elo'      => 'nullable|integer',
-            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
-            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+//            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
+//            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+            'category' => ['nullable', 'string'],
+            'title'    => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -571,18 +577,61 @@ class UserController extends Controller
      *       ),
      *     )
      */
-    public function getPlayerGames(Player $player)
+    public function getPlayerGames($registration_id)
     {
+        $player = Player::where('registration_id', $registration_id)->first();
+        if (!$player)
+            return response()->json('Player not found', 404);
+
         $matches = $player->matchesCustom();
 
-        return response()->json($matches, 201);
+        $playersAll = User::all();
+
+        $matches->each(function($match) use ($playersAll) {
+            $match->whiteName = $playersAll->where('id', $match->white)->first()->name;
+            $match->blackName = $playersAll->where('id', $match->black)->first()->name;
+        });
+
+        $winPercentage = $player->points / $matches->whereNotNull('result')->count();
+
+        $nextMatch = $matches->whereNull('result')->first();
+
+        if (!$nextMatch) {
+            $opponentName = "";
+            $nextRoundTable = "";
+            $time = "";
+        } else {
+            if ($nextMatch->white == $player->id) {
+                $opponentName = $nextMatch->blackName;
+            } else {
+                $opponentName = $nextMatch->whiteName;
+            }
+            $nextRoundTable = $nextMatch->table;
+            $time = "10:00";
+        }
+
+
+        $incrementElo = $player->points >= 1 ? rand(1, 20) : rand(-1, -20);
+
+        return response()->json([
+            'data' => $matches,
+            'winPercentage' => $winPercentage * 100,
+            'opponentName' => $opponentName,
+            'elo' => $player->elo,
+            'eloIncrement' => "$incrementElo",
+            'nextRoundTable' => $nextRoundTable,
+            'time' => $time,
+            'tournament_name' => Tournament::where('id', $player->tournament_id)->first()->title,
+            'file' => Tournament::where('id', $player->tournament_id)->first()->file
+        ], 201);
     }
 
-    public function abc(Request $request)
+    public function destroy(Request $request, $id)
     {
-        Log::info("Here");
-        Log::info(collect($request->all())->toJson());
-        dd('ah');
 
+
+        User::where('id', $id)->delete();
+
+        return response()->json(['code' => 204], 204);
     }
 }

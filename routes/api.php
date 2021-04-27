@@ -38,8 +38,10 @@ Route::group([
 
     Route::post('/players/checkPlayerId', 'UserController@checkPlayerId');
 
-    Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
+    Route::get('/players/{registration_id}/matches', 'UserController@getPlayerGames');
     Route::post('/players/import/storeBulk', 'UserController@storeBulk')->middleware('auth:api');
+
+    Route::delete('/players/{id}', 'UserController@destroy')->middleware('auth:api');
 
     Route::get('/players/standings/{tournament_id}/', 'UserController@standings');
 

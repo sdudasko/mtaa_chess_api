@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -79,6 +80,7 @@ class TournamentController extends Controller
             'tempo_increment' => 'nullable|integer',
             'rounds'          => 'required|integer',
             'description'     => 'nullable|string',
+            'file' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -94,6 +96,18 @@ class TournamentController extends Controller
             $sanitized["qr_hash"] = $qr_hash = Str::random(20);
             $tournament = Tournament::Create($sanitized);
             $tournament->tournament_hash = $tournament->qr_hash;
+
+            if ($request->has('file')) {
+
+                $image = base64_decode($request->get('file'));
+
+                Storage::disk('local')->put('turnaj.png', $image);
+
+                $tournament->update([
+                    'file_path' => storage_path("app/turnaj.png"),
+                ]);
+            }
+
             return response()->json(['data' => $tournament], 201);
         }
         else
@@ -157,7 +171,7 @@ class TournamentController extends Controller
 
         if (!$tournament)
             return response('Tournament not found', 404);
-        $path = storage_path("app/public/tournaments/$tournament->file_path");
+        $path = storage_path("app/$tournament->file_path");
 
         if ($tournament->file_path)
             if (File::exists($path))
@@ -278,9 +292,12 @@ class TournamentController extends Controller
 
         if ($request->has('file')) {
 
-            $request->file->store('tournaments', 'public');
+            $image = base64_decode($request->get('file'));
+
+            Storage::disk('local')->put('turnaj.png', $image);
+
             $tournament->update([
-                'file_path' => $request->file->hashName(),
+                'file_path' => "turnaj.png",
             ]);
         }
 
