@@ -104,7 +104,7 @@ class TournamentController extends Controller
                 Storage::disk('local')->put('turnaj.png', $image);
 
                 $tournament->update([
-                    'file_path' => storage_path("app/turnaj.png"),
+                    'file_path' => "turnaj.png",
                 ]);
             }
 

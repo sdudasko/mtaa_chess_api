@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -98,8 +99,9 @@ class UserController extends Controller
      *     )
      */
 
-    public function index($tournamentId)
+    public function index($hash)
     {
+        $tournamentId = Tournament::where('qr_hash', $hash)->first()->id;
         $users = User::where('role_id', null)
             ->where('tournament_id', $tournamentId)
             ->orderBy('id')
@@ -146,6 +148,7 @@ class UserController extends Controller
      */
     public function storeBulk(Request $request)
     {
+        Log::info("Store bulk");
         $administrator = User::where('id', auth()->id())->first();
 
         if (!$administrator->tournament) {
@@ -153,7 +156,17 @@ class UserController extends Controller
         }
 
         try {
-            Excel::import(new PlayersImport($administrator->tournament), $request->import_file);
+            if ($request->has('import_file')) {
+
+                $import_file = base64_decode($request->get('import_file'));
+
+//                Storage::disk('local')->put('import_file.xlsx', $image);
+
+            } else {
+                Log::info("File not present");
+            }
+
+            Excel::import(new PlayersImport($administrator->tournament), base64_decode($request->import_file));
         } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), 422);
         }
