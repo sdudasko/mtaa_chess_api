@@ -171,6 +171,7 @@ class TournamentController extends Controller
 
         if (!$tournament)
             return response('Tournament not found', 404);
+
         $path = storage_path("app/$tournament->file_path");
 
         if ($tournament->file_path)

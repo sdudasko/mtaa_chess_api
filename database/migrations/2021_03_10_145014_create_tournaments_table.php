@@ -25,6 +25,7 @@ class CreateTournamentsTable extends Migration
             $table->integer('rounds');
             $table->string('file_path')->nullable();
             $table->string("qr_hash")->nullable();
+            $table->string("tournament_hash")->nullable();
             $table->timestamps();
         });
     }
