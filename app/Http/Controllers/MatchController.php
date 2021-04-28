@@ -97,10 +97,15 @@ class MatchController extends Controller
      */
     public function index(Request $request, $hash)
     {
-        $sanitized = Validator::make($request->all(), [
-            'hash' => 'required',
+        $validator= validator::make($request->all(), [
+            'hash' => 'required|string',
             'round' => 'nullable|integer',
-        ])->validated();
+        ]);
+        $sanitized=$validator->validated();
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
 
         $tournament = Tournament::where('qr_hash', $hash)->first();
 
@@ -195,7 +200,6 @@ class MatchController extends Controller
         if (!$tournament) {
             return response()->json('There is not tournament created for this user', 403);
         }
-
         $players = User::where("role_id", null)->where('tournament_id', $tournament->id)->get();
 
         $lastRoundMatches = Match::where('tournament_id', $tournament->id)->get();
@@ -212,7 +216,7 @@ class MatchController extends Controller
         else
             $lastRound = 0;
 
-        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1, $tournament);
+
 
         $playersAll = User::all();
 
@@ -222,6 +226,7 @@ class MatchController extends Controller
         });
 
         return response()->json(['data' => $generatedMatches], 201);
+
     }
 
     /**

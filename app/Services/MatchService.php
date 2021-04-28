@@ -12,13 +12,11 @@ class MatchService
     public static function generateBySwissSystem($players, $round, $tournament, $updatePoints = false)
     {
         $numberOfPlayers = $players->count();
-
         $players->sortBy(function ($player) {
             return $player->points;
         });
 
         $j = 0;
-
         for ( $i = 0; $i < $numberOfPlayers; $i += 2 ) {
 
             if ($j % 2 == 1) {
