@@ -148,32 +148,34 @@ class UserController extends Controller
      */
     public function storeBulk(Request $request)
     {
-        Log::info("Store bulk");
+        Log::info("store bulk");
+        Log::info(collect($request->all())->toJson());
         $administrator = User::where('id', auth()->id())->first();
 
         if (!$administrator->tournament) {
             return response()->json('There is not tournament created for this user', 403);
         }
 
+        if ($request->has('import_file')) {
+            Storage::disk('local')->put('hraci.xlsx', $request->import_file);
+
+        }
+
         try {
-            if ($request->has('import_file')) {
-
-                $import_file = base64_decode($request->get('import_file'));
-
-//                Storage::disk('local')->put('import_file.xlsx', $image);
-
-            } else {
-                Log::info("File not present");
-            }
-
-            Excel::import(new PlayersImport($administrator->tournament), base64_decode($request->import_file));
+            Excel::import(new PlayersImport($administrator->tournament), $request->import_file);
         } catch (\Exception $exception) {
+
+            Log::info($exception->getMessage());
             return response()->json($exception->getMessage(), 422);
         }
 
         \Session::put('success', 'Your file is imported successfully in database.');
 
-        return response()->json([], 200);
+//        return response()->json([], 200);
+        return response()->json([
+            'data' => Tournament::where('user_id', $administrator->id)
+
+        ], 201);
     }
 
     /**
