@@ -533,7 +533,7 @@ class UserController extends Controller
 
         $sanitized = $validator->validated();
 
-        return response()->json(['message' => "User exists"], 200);
+        return response()->json(['message' => "User exists", 'registration_id' => $sanitized['registration_id']], 200);
     }
 
     /**
@@ -607,7 +607,12 @@ class UserController extends Controller
             $match->blackName = $playersAll->where('id', $match->black)->first()->name;
         });
 
-        $winPercentage = $player->points / $matches->whereNotNull('result')->count();
+        if ($matches->whereNotNull('result')->count() != 0) {
+            $winPercentage = $player->points / $matches->whereNotNull('result')->count();
+        } else {
+            $winPercentage = 0;
+        }
+
 
         $nextMatch = $matches->whereNull('result')->first();
 
@@ -627,6 +632,10 @@ class UserController extends Controller
 
 
         $incrementElo = $player->points >= 1 ? rand(1, 20) : rand(-1, -20);
+
+        if (is_null($player->points)) {
+            $incrementElo = 0;
+        }
 
         return response()->json([
             'data' => $matches,

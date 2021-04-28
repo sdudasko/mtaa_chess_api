@@ -104,9 +104,13 @@ class MatchController extends Controller
 
         $tournament = Tournament::where('qr_hash', $hash)->first();
 
-        $lastRound = $tournament->matches()->orderBy('round', 'desc')->first()->round;
-        if (!$lastRound)
+        $lastRound = $tournament->matches()->orderBy('round', 'desc')->first();
+        if (!$lastRound) {
             $lastRound = 1;
+        } else {
+            $lastRound = $lastRound->round;
+        }
+
 
         if (isset($sanitized['round']) && $sanitized['round']) {
             $matches = $tournament->matches()->where('round', $sanitized['round'])->get();
