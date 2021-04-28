@@ -27,16 +27,15 @@ class MatchTest extends TestCase
 
         $players = User::factory(100)->create();
 
-        for ($i = 1; $i < $rounds - 1; $i++)
-        {
+        for ( $i = 1; $i < $rounds - 1; $i++ ) {
             $matchService->generateBySwissSystem($players, $i, Tournament::first(), true);
         }
 
-        $sumPoints = User::where('role_id', null)->get()->sum(function($user) {
+        $sumPoints = User::where('role_id', null)->get()->sum(function ($user) {
             return $user->points;
         });
 
-        $total = ($rounds) * $players->count()/2;
+        $total = ($rounds) * $players->count() / 2;
 
         $this->assertEquals($sumPoints, $total);
 
@@ -47,7 +46,7 @@ class MatchTest extends TestCase
         $data = collect(json_decode($response->content()));
 
         $shouldBeTotal = $data->count() - 1; // -1 for admin
-        $sumAfterEndOfTournament = $data->pluck('points')->sum(function($point) {
+        $sumAfterEndOfTournament = $data->pluck('points')->sum(function ($point) {
             return $point;
         });
 
@@ -63,7 +62,7 @@ class MatchTest extends TestCase
 
         $i = 1;
         $ok = true;
-        $whitePlayersIds->each(function($whitePlayerId) use (&$i, &$ok, $carryNumber) {
+        $whitePlayersIds->each(function ($whitePlayerId) use (&$i, &$ok, $carryNumber) {
 
             if ($whitePlayerId != $i) {
                 $ok = false;
@@ -97,10 +96,10 @@ class MatchTest extends TestCase
         $this->actingAs($administrator, 'api');
         $tournament_id = Tournament::first()->id;
 
-        $response = $this->put( "v1/matches/");
+        $response = $this->put("v1/matches/");
         $response->assertStatus(201);
 
-        $response = $this->put( "v1/matches/");
+        $response = $this->put("v1/matches/");
         $response->assertStatus(403);
 
         $this->assertTrue(true);

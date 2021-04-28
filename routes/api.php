@@ -25,7 +25,7 @@ Route::group([
     // Create for all CRUD
 //    Route::apiResource('tournaments', 'TournamentController');
 
-    Route::get('/matches', 'MatchController@index');
+    Route::get('/matches/{hash}', 'MatchController@index');
     Route::put('/matches', 'MatchController@store')->middleware('auth:api');
     Route::post('/matches/{match}', 'MatchController@update');
     Route::get('/matches/exportToPDF/{match}', 'MatchController@exportToPDF');
@@ -33,19 +33,22 @@ Route::group([
     Route::get('/players/tournament/{tournamentId}', 'UserController@index');
     Route::put('/players/{player}', 'UserController@update');
     Route::put('/players', 'UserController@store')->middleware('auth:api');
+    Route::post('/players', 'UserController@abc');
     Route::get('/players/{player}', 'UserController@show');
 
     Route::post('/players/checkPlayerId', 'UserController@checkPlayerId');
 
-    Route::get('/players/{player}/matches', 'UserController@getPlayerGames');
+    Route::get('/players/{registration_id}/matches', 'UserController@getPlayerGames');
     Route::post('/players/import/storeBulk', 'UserController@storeBulk')->middleware('auth:api');
+
+    Route::delete('/players/{id}', 'UserController@destroy')->middleware('auth:api');
 
     Route::get('/players/standings/{tournament_id}/', 'UserController@standings');
 
     // Tournament routes...
     Route::put('/tournaments', 'TournamentController@store')->middleware('auth:api');
     Route::delete('/tournaments/{id}', 'TournamentController@destroy')->middleware('auth:api');
-    Route::post('/tournaments/{id}', 'TournamentController@update')->middleware('auth:api');;
+    Route::post('/tournaments/{id}', 'TournamentController@update')->middleware('auth:api');
     Route::get('/tournaments/{hash}', 'TournamentController@show');
     Route::post('/tournaments/checkTournamentByHash/{hash}', 'TournamentController@checkTournamentByHash');
 

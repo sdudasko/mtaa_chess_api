@@ -6,9 +6,12 @@ use App\Http\Requests\StoreTournamentRequest;
 use App\Http\Requests\UpdateTournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Models\Tournament;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -68,6 +71,8 @@ class TournamentController extends Controller
 
     public function store(Request $request)
     {
+        Log::info("STORE");
+        Log::info(collect($request->all())->toJson());
         $validator = Validator::make($request->all(), [
             'title'           => 'required|string',
             'date'            => 'nullable|date',
@@ -75,6 +80,7 @@ class TournamentController extends Controller
             'tempo_increment' => 'nullable|integer',
             'rounds'          => 'required|integer',
             'description'     => 'nullable|string',
+            'file' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -89,7 +95,20 @@ class TournamentController extends Controller
             $sanitized["user_id"] = Auth::id();
             $sanitized["qr_hash"] = $qr_hash = Str::random(20);
             $tournament = Tournament::Create($sanitized);
-            return response()->json($tournament, 201);
+            $tournament->tournament_hash = $tournament->qr_hash;
+
+            if ($request->has('file')) {
+
+                $image = base64_decode($request->get('file'));
+
+                Storage::disk('local')->put('turnaj.png', $image);
+
+                $tournament->update([
+                    'file_path' => "turnaj.png",
+                ]);
+            }
+
+            return response()->json(['data' => $tournament], 201);
         }
         else
         {
@@ -146,11 +165,14 @@ class TournamentController extends Controller
      */
     public function show($hash)
     {
+        Log::info("SHOW");
+        Log::info($hash);
         $tournament = Tournament::where('qr_hash', $hash)->first();
 
         if (!$tournament)
             return response('Tournament not found', 404);
-        $path = storage_path("app/public/tournaments/$tournament->file_path");
+
+        $path = storage_path("app/$tournament->file_path");
 
         if ($tournament->file_path)
             if (File::exists($path))
@@ -160,9 +182,12 @@ class TournamentController extends Controller
         else
             $encoded_file = null;
 
+        $tournament->organiser = User::find($tournament->user_id)->name;
+
         return response()->json([
-            'tournament' => $tournament,
-            'file' => $encoded_file
+            'data' => $tournament,
+            'file' => $encoded_file,
+            'tournament_hash' => $hash,
 
         ], 201);
 
@@ -235,8 +260,10 @@ class TournamentController extends Controller
      * @param UpdateTournamentRequest $request
      * @param Tournament $tournament
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $hash)
     {
+        Log::info("UPDATE");
+        Log::info($hash);
         $validator = Validator::make($request->all(), [
             'title'           => 'nullable|string',
             'datetime'            => 'nullable|date',
@@ -252,7 +279,9 @@ class TournamentController extends Controller
         }
 
         $user_id=Auth::id();
-        $tournament=Tournament::findOrFail($id);
+        $tournament=Tournament::where('qr_hash', $hash)->first();
+        if (!$tournament)
+            return response()->json("Tournament with hash $hash was not found.",404);
 
         $title= $request->input('title');
         $datetime=$request->input('datetime');
@@ -264,9 +293,12 @@ class TournamentController extends Controller
 
         if ($request->has('file')) {
 
-            $request->file->store('tournaments', 'public');
+            $image = base64_decode($request->get('file'));
+
+            Storage::disk('local')->put('turnaj.png', $image);
+
             $tournament->update([
-                'file_path' => $request->file->hashName(),
+                'file_path' => "turnaj.png",
             ]);
         }
 
@@ -307,7 +339,9 @@ class TournamentController extends Controller
             ]);
         }
 
-        return response()->json($tournament, 201);
+        $tournament->tournament_hash = $hash;
+
+        return response()->json(['data' => $tournament], 201);
 
     }
 
@@ -341,14 +375,16 @@ class TournamentController extends Controller
      *      )
      * )
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request)
     {
+        Log::info("DELETE");
+//        return response()->json(['data' => $id], 204); // TODO - Remove to enable detete
         $user_id=Auth::id();
 
         $auth_id = auth()->id();
 
         if ($auth_id == $user_id) {
-            $tournament = Tournament::findOrFail($id);
+            $tournament = Tournament::where('user_id', $auth_id)->first();
             $tournament->delete();
         }
 

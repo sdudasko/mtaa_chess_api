@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -56,6 +57,9 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        Log::info("Here. Register Page.");
+        Log::info(collect($request->all())->toJson());
+
         $validator = Validator::make($request->all(), [
             'name'     => 'required|max:55',
             'email'    => 'email|required|unique:users',
@@ -63,7 +67,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json(['data' => $validator->errors()], 422);
         }
 
         $validatedData = $validator->validated();
@@ -78,7 +82,7 @@ class AuthController extends Controller
 
         $accessToken = $user->createToken('authToken')->accessToken;
 
-        return response(['user' => $user, 'access_token' => $accessToken]);
+        return response(['user' => $user, 'access_token' => $accessToken], 201);
     }
 
     /**
@@ -144,6 +148,8 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        Log::info("Here. Login Page.");
+        Log::info(collect($request->all())->toJson());
         $loginData = $request->validate([
             'email'    => 'email|required',
             'password' => 'required',
@@ -160,7 +166,7 @@ class AuthController extends Controller
             $tournament_hash = null;
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        return response(['user' => auth()->user(), 'access_token' => $accessToken, 'tournament_hash' => $tournament_hash]);
+        return response(['user' => auth()->user(), 'access_token' => $accessToken, 'tournament_hash' => $tournament_hash],201);
 
     }
 
@@ -208,7 +214,6 @@ class AuthController extends Controller
             Auth::user()->authAcessToken()->delete();
             return response()->json([], 200);
         }
-
         return response()->json("Unauthenticated", 401);
     }
 }

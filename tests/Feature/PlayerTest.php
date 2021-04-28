@@ -26,8 +26,8 @@ class PlayerTest extends TestCase
         $hash = Str::random(12);
 
         $response = $this->call('post', 'v1/players/checkPlayerId', [
-            'hash' => $hash,
-            'registration_id' => $registration_id
+            'hash'            => $hash,
+            'registration_id' => $registration_id,
         ]);
 
         $response->assertStatus(403);

@@ -95,7 +95,7 @@ class MatchController extends Controller
      *      ),
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request, $hash)
     {
         $validator= validator::make($request->all(), [
             'hash' => 'required|string',
@@ -106,14 +106,31 @@ class MatchController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $tournament = Tournament::where('qr_hash', $sanitized['hash'])->first();
+
+        $tournament = Tournament::where('qr_hash', $hash)->first();
+
+        $lastRound = $tournament->matches()->orderBy('round', 'desc')->first();
+        if (!$lastRound) {
+            $lastRound = 1;
+        } else {
+            $lastRound = $lastRound->round;
+        }
+
+
         if (isset($sanitized['round']) && $sanitized['round']) {
             $matches = $tournament->matches()->where('round', $sanitized['round'])->get();
         } else {
-            $matches = $tournament->matches;
+            $matches = $tournament->matches()->where('round', $lastRound)->get();
         }
 
-        return response()->json($matches, 201);
+        $playersAll = User::all();
+
+        $matches->each(function($match) use ($playersAll) {
+            $match->whiteName = $playersAll->where('id', $match->white)->first()->name;
+            $match->blackName = $playersAll->where('id', $match->black)->first()->name;
+        });
+
+        return response()->json(['data' => $matches], 201);
     }
 
     /**
@@ -187,7 +204,7 @@ class MatchController extends Controller
 
         $lastRoundMatches = Match::where('tournament_id', $tournament->id)->get();
 
-        $foundMatchInProgress = $lastRoundMatches->where('result', null)->first();
+        $foundMatchInProgress = $lastRoundMatches->whereNull('result')->first();
 
 
         if ($foundMatchInProgress != null) {
@@ -200,8 +217,16 @@ class MatchController extends Controller
             $lastRound = 0;
 
 
-        $generatedMatches = MatchService::generateBySwissSystem($players, $lastRound + 1, $tournament);
-        return response()->json($generatedMatches, 201);
+
+        $playersAll = User::all();
+
+        $generatedMatches->each(function($match) use ($playersAll) {
+            $match->whiteName = $playersAll->where('id', $match->white)->first()->name;
+            $match->blackName = $playersAll->where('id', $match->black)->first()->name;
+        });
+
+        return response()->json(['data' => $generatedMatches], 201);
+
     }
 
     /**

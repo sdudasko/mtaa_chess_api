@@ -7,8 +7,12 @@ use App\Imports\PlayersImport;
 use App\Imports\TransactionsImport;
 use App\Models\Category;
 use App\Models\Player;
+use App\Models\Tournament;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -95,13 +99,15 @@ class UserController extends Controller
      *     )
      */
 
-    public function index($tournamentId)
+    public function index($hash)
     {
+        $tournamentId = Tournament::where('qr_hash', $hash)->first()->id;
         $users = User::where('role_id', null)
             ->where('tournament_id', $tournamentId)
+            ->orderBy('id')
             ->get();
 
-        return response()->json($users, 201);
+        return response()->json(['data' => $users], 201);
     }
 
     /**
@@ -142,21 +148,34 @@ class UserController extends Controller
      */
     public function storeBulk(Request $request)
     {
+        Log::info("store bulk");
+        Log::info(collect($request->all())->toJson());
         $administrator = User::where('id', auth()->id())->first();
 
         if (!$administrator->tournament) {
             return response()->json('There is not tournament created for this user', 403);
         }
 
+        if ($request->has('import_file')) {
+            Storage::disk('local')->put('hraci.xlsx', $request->import_file);
+
+        }
+
         try {
             Excel::import(new PlayersImport($administrator->tournament), $request->import_file);
         } catch (\Exception $exception) {
+
+            Log::info($exception->getMessage());
             return response()->json($exception->getMessage(), 422);
         }
 
         \Session::put('success', 'Your file is imported successfully in database.');
 
-        return response()->json([], 200);
+//        return response()->json([], 200);
+        return response()->json([
+            'data' => Tournament::where('user_id', $administrator->id)
+
+        ], 201);
     }
 
     /**
@@ -321,8 +340,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string',
             'elo'      => 'required|integer',
-            'category' => ['required', 'string', Rule::in(Category::getCategories())],
-            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+//            'category' => ['required', 'string', Rule::in(Category::getCategories())],
+//            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+            'category' => ['required', 'string'],
+            'title'    => ['nullable', 'string'],
             'email'    => 'email|unique:users,email',
         ]);
 
@@ -387,7 +408,7 @@ class UserController extends Controller
      */
     public function show(Player $player)
     {
-        return response()->json($player, 201);
+        return response()->json(['data' => $player], 201);
     }
 
     /**
@@ -444,8 +465,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'     => 'nullable|string',
             'elo'      => 'nullable|integer',
-            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
-            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+//            'category' => ['nullable', 'string', Rule::in(Category::getCategories())],
+//            'title'    => ['nullable', 'string', Rule::in(['FM', 'WGM', 'WFM', 'WIM', 'CM', 'IM', 'GM'])],
+            'category' => ['nullable', 'string'],
+            'title'    => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -510,7 +533,7 @@ class UserController extends Controller
 
         $sanitized = $validator->validated();
 
-        return response()->json('', 200);
+        return response()->json(['message' => "User exists", 'registration_id' => $sanitized['registration_id']], 200);
     }
 
     /**
@@ -569,10 +592,70 @@ class UserController extends Controller
      *       ),
      *     )
      */
-    public function getPlayerGames(Player $player)
+    public function getPlayerGames($registration_id)
     {
+        $player = Player::where('registration_id', $registration_id)->first();
+        if (!$player)
+            return response()->json('Player not found', 404);
+
         $matches = $player->matchesCustom();
 
-        return response()->json($matches, 201);
+        $playersAll = User::all();
+
+        $matches->each(function($match) use ($playersAll) {
+            $match->whiteName = $playersAll->where('id', $match->white)->first()->name;
+            $match->blackName = $playersAll->where('id', $match->black)->first()->name;
+        });
+
+        if ($matches->whereNotNull('result')->count() != 0) {
+            $winPercentage = $player->points / $matches->whereNotNull('result')->count();
+        } else {
+            $winPercentage = 0;
+        }
+
+
+        $nextMatch = $matches->whereNull('result')->first();
+
+        if (!$nextMatch) {
+            $opponentName = "";
+            $nextRoundTable = "";
+            $time = "";
+        } else {
+            if ($nextMatch->white == $player->id) {
+                $opponentName = $nextMatch->blackName;
+            } else {
+                $opponentName = $nextMatch->whiteName;
+            }
+            $nextRoundTable = $nextMatch->table;
+            $time = "10:00";
+        }
+
+
+        $incrementElo = $player->points >= 1 ? rand(1, 20) : rand(-1, -20);
+
+        if (is_null($player->points)) {
+            $incrementElo = 0;
+        }
+
+        return response()->json([
+            'data' => $matches,
+            'winPercentage' => $winPercentage * 100,
+            'opponentName' => $opponentName,
+            'elo' => $player->elo,
+            'eloIncrement' => "$incrementElo",
+            'nextRoundTable' => $nextRoundTable,
+            'time' => $time,
+            'tournament_name' => Tournament::where('id', $player->tournament_id)->first()->title,
+            'file' => Tournament::where('id', $player->tournament_id)->first()->file
+        ], 201);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+
+
+        User::where('id', $id)->delete();
+
+        return response()->json(['code' => 204], 204);
     }
 }
